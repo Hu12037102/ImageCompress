@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">ImageCompress</string>
+    <string name="preview">preview_image</string>
+</resources>
