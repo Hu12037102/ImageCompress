@@ -169,6 +169,12 @@ public class MainActivity extends BaseActivity {
         if (mImageView.getDrawable() != null) {
             mImageView.setImageDrawable(null);
         }
+        if (mImageFile != null) {
+            mRawText.setText(null);
+        }
+        if (mCompressImageFile != null) {
+            mCompressText.setText(null);
+        }
         if (mCompressImageView.getDrawable() != null) {
             mCompressImageView.setImageDrawable(null);
         }

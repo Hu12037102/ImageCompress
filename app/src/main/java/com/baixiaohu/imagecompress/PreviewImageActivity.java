@@ -5,11 +5,15 @@ import android.graphics.Color;
 import android.os.Build;
 import android.transition.Explode;
 import android.transition.Fade;
+import android.transition.Slide;
+import android.transition.TransitionSet;
 import android.view.View;
+import android.view.Window;
 
 import com.bumptech.glide.Glide;
 
 import uk.co.senab.photoview.PhotoView;
+import uk.co.senab.photoview.PhotoViewAttacher;
 import utils.LogUtils;
 
 /**
@@ -37,20 +41,38 @@ public class PreviewImageActivity extends BaseActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setEnterTransition(new Fade().setDuration(1000));
         }
-        mPreviewImage = findViewById(R.id.preview_iv);
+        mPreviewImage =  findViewById(R.id.preview_iv);
     }
 
 
+    @Override
+    protected void initUI() {
+        super.initUI();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            if (window == null) {
+                finish();
+                return;
+            }
+            View view = window.getDecorView();
+            int option = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            view.setSystemUiVisibility(option);
+            getWindow().setNavigationBarColor(Color.TRANSPARENT);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
+    }
 
     @Override
     protected void initData() {
         Intent intent = getIntent();
-        LogUtils.w("initData---",intent+"" );
+        LogUtils.w("initData---", intent + "");
         if (intent != null) {
             String imagePath = intent.getStringExtra("image_path");
             if (imagePath != null) {
                 Glide.with(this).load(imagePath).into(mPreviewImage);
-            }else {
+            } else {
                 finish();
             }
         }
@@ -58,6 +80,17 @@ public class PreviewImageActivity extends BaseActivity {
 
     @Override
     protected void initEvent() {
-
+        mPreviewImage.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
+            @Override
+            public void onViewTap(View view, float x, float y) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    finishAfterTransition();
+                }else {
+                    finish();
+                }
+            }
+        });
     }
+
+
 }
