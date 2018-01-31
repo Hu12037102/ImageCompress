@@ -1,11 +1,16 @@
 package utils;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 
 import java.io.File;
@@ -15,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DecimalFormat;
+import java.util.List;
 
 /**
  * 项  目 :  ImageCompress
@@ -42,6 +48,10 @@ public class FileUtils {
         return rootFile;
     }
 
+    public static File resultImageFile(Context context) {
+        return new File(outFileDirectory(context).getAbsolutePath(), "hxb" + System.currentTimeMillis() + ".jpg");
+    }
+
     public static File getFileDirectorHead(Context context) {
         String storageState = Environment.getExternalStorageState();
         File rootFile = storageState.equals(Environment.MEDIA_MOUNTED) ? Environment.getExternalStorageDirectory() : context.getCacheDir();
@@ -56,7 +66,7 @@ public class FileUtils {
         return file;
     }
 
-    public static String IMAGE_HEAD_FORAT = "/HXB_" + System.currentTimeMillis()+ ".jpg";
+    public static String IMAGE_HEAD_FORAT = "/HXB_" + System.currentTimeMillis() + ".jpg";
 
     private boolean isImageFile(Context context, String path) {
         return false;
@@ -187,6 +197,34 @@ public class FileUtils {
                     }
                 }
             }
+        }
+    }
+
+    public static Uri fileToUri(@NonNull Context context, @NonNull File file, @NonNull Intent intent) {
+        Uri uri;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            String authority = context.getPackageName() + ".provider";
+            uri = FileProvider.getUriForFile(context, authority, file);
+            List<ResolveInfo> resolveInfos = context.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+            if (resolveInfos != null && resolveInfos.size() > 0)
+                for (ResolveInfo resolveInfo : resolveInfos) {
+                    String packageName = resolveInfo.activityInfo.packageName;
+                    context.grantUriPermission(packageName, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                }
+        } else {
+            uri = Uri.fromFile(file);
+        }
+        return uri;
+    }
+
+    public static void scanImage(@NonNull Context context, @NonNull File file) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            MediaScanner ms = new MediaScanner(context, file);
+            ms.refresh();
+        } else {
+            Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            intent.setData(Uri.fromFile(file));
+            context.sendBroadcast(intent);
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.baixiaohu.imagecompress;
+package com.baixiaohu.imagecompress.activity;
 
 import android.Manifest;
 import android.content.Intent;
@@ -13,11 +13,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baixiaohu.imagecompress.base.BaseActivity;
 
+import com.baixiaohu.imagecompress.R;
+import com.baixiaohu.imagecompress.bean.ImageFileBean;
+import com.baixiaohu.imagecompress.permission.imp.OnPermissionsResult;
+import com.baixiaohu.imagecompress.toast.Toasts;
 import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import utils.FileUtils;
 import utils.LogUtils;
@@ -50,7 +56,6 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-
         mImageView = findViewById(R.id.raw_iv);
         mCompressImageView = findViewById(R.id.compress_iv);
         mRawText = findViewById(R.id.raw_tv);
@@ -60,24 +65,37 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
+    protected void initPermission() {
+
+        requestPermission(new OnPermissionsResult() {
+            @Override
+            public void onAllow(List<String> allowPermissions) {
+                MainActivity.super.initPermission();
+            }
+
+            @Override
+            public void onNoAllow(List<String> noAllowPermissions) {
+                Toasts.show("内存卡读写为必要权限");
+                finish();
+            }
+
+            @Override
+            public void onForbid(List<String> noForbidPermissions) {
+                showForbidPermissionDialog("读写内存卡");
+                finish();
+            }
+
+            @Override
+            public void onLowVersion() {
+                MainActivity.super.initPermission();
+            }
+        }, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+    }
+
+    @Override
     protected void initData() {
-        LogUtils.w("initData--", "天青色等烟雨");
-        requestPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_CONTACTS_CODE, new OnRequestPermission() {
-            @Override
-            public void onRequestSucceed() {
 
-            }
-
-            @Override
-            public void onRequestError() {
-
-            }
-
-            @Override
-            public void onNotRequestPermission() {
-
-            }
-        });
     }
 
 
@@ -87,6 +105,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 clickChooseView();
+                openPhoto();
             }
         });
         mCompressView.setOnClickListener(new View.OnClickListener() {
@@ -171,6 +190,7 @@ public class MainActivity extends BaseActivity {
         }
         if (mImageFile != null) {
             mRawText.setText(null);
+            mImageFile = null;
         }
         if (mCompressImageFile != null) {
             mCompressText.setText(null);
@@ -178,44 +198,19 @@ public class MainActivity extends BaseActivity {
         if (mCompressImageView.getDrawable() != null) {
             mCompressImageView.setImageDrawable(null);
         }
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");
-        startActivityForResult(intent, MainActivity.PICK_IMAGE_REQUEST_CODE);
+
     }
+
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case REQUEST_WRITE_CONTACTS_CODE:
-                if (!permissions[0].equals(Manifest.permission.WRITE_EXTERNAL_STORAGE) || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    finish();
-                }
-                break;
-            default:
-                break;
+    protected void imageFileResult(ImageFileBean bean) {
+        super.imageFileResult(bean);
+        if (bean != null) {
+            mImageFile = bean.imageFile;
+            Glide.with(this).load(bean.imageFile).into(mImageView);
+            mRawText.setText("Size:" + FileUtils.imageSize(mImageFile.length()));
         }
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == MainActivity.PICK_IMAGE_REQUEST_CODE) {
-            if (data == null) {
-                Toast.makeText(getApplicationContext(), "获取图片异常！", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            try {
-                mImageFile = FileUtils.from(this, data.getData());
-                Glide.with(this).load(mImageFile).into(mImageView);
-                mRawText.setText("Size:" + FileUtils.imageSize(mImageFile.length()));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
-
 
     @Override
     public void onBackPressed() {

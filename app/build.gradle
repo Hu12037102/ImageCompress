@@ -31,6 +31,7 @@ dependencies {
     implementation project(':compress')
     implementation files('libs/systembartint-1.0.4.jar')
     implementation 'com.github.chrisbanes:PhotoView:1.2.7'
+    compile 'com.android.support:multidex:1.0.1'
 }
 allprojects {
     repositories {

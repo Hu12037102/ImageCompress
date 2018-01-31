@@ -1,15 +1,14 @@
-package com.baixiaohu.imagecompress;
+package com.baixiaohu.imagecompress.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
-import android.transition.Explode;
 import android.transition.Fade;
-import android.transition.Slide;
-import android.transition.TransitionSet;
 import android.view.View;
 import android.view.Window;
 
+import com.baixiaohu.imagecompress.R;
+import com.baixiaohu.imagecompress.base.BaseActivity;
 import com.bumptech.glide.Glide;
 
 import uk.co.senab.photoview.PhotoView;
