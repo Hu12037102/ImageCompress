@@ -17,6 +17,7 @@ import com.baixiaohu.imagecompress.base.BaseActivity;
 
 import com.baixiaohu.imagecompress.R;
 import com.baixiaohu.imagecompress.bean.ImageFileBean;
+import com.baixiaohu.imagecompress.dialog.ExitDialog;
 import com.baixiaohu.imagecompress.permission.imp.OnPermissionsResult;
 import com.baixiaohu.imagecompress.toast.Toasts;
 import com.bumptech.glide.Glide;
@@ -37,17 +38,14 @@ import utils.task.CompressImageTask;
  *         一个关于压缩图片工具类
  */
 public class MainActivity extends BaseActivity {
-
-    private static final int REQUEST_WRITE_CONTACTS_CODE = 100;
-
     private ImageView mImageView, mCompressImageView;
     private TextView mRawText, mCompressText;
     private View mChooseView, mCompressView;
-    private static final int PICK_IMAGE_REQUEST_CODE = 100;
     private File mImageFile;
     private boolean mIsCompress;
     private static final String IMAGE_PATH_KEY = "image_path";
     private File mCompressImageFile;
+    private ExitDialog mExitDialog;
 
     @Override
     protected int getLayoutId() {
@@ -214,6 +212,21 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (mExitDialog == null) {
+            mExitDialog = new ExitDialog(this);
+        }
+        if (!mExitDialog.isShowing())
+            mExitDialog.show();
+        mExitDialog.setOnExitDialogClickListener(new ExitDialog.OnExitDialogClickListener() {
+            @Override
+            public void onConfirmListener(boolean isChecked) {
+                if (isChecked){
+                    FileUtils.deleteAllFile(FileUtils.getFileDirectorHead(MainActivity.this.getApplicationContext()));
+                }
+                MainActivity.super.onBackPressed();
+                System.exit(0);
+                System.gc();
+            }
+        });
     }
 }

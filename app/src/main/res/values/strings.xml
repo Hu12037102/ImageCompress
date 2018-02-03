@@ -4,4 +4,6 @@
     <string name="camera">相机</string>
     <string name="album">相册</string>
     <string name="cancel">取消</string>
+    <string name="exit_app_content">您确定退出APP？</string>
+    <string name="exit_is_delete_file">删除压缩文件</string>
 </resources>
