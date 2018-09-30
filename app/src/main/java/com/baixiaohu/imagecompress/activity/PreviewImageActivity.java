@@ -26,7 +26,7 @@ import utils.LogUtils;
  * 包  名 :  com.baixiaohu.imagecompress
  * 类  名 :  PreviewImageActivity
  * 作  者 :  胡庆岭
- * 时  间 :  2018/1/8 0008 下午 2:11
+ * 时  间 :  2018/9/30 0008 下午 2:11
  * 描  述 :  ${TODO}
  *
  * @author ：
@@ -69,9 +69,6 @@ public class PreviewImageActivity extends BaseActivity {
     @Override
     protected void initData() {
         Intent intent = getIntent();
-
-
-        LogUtils.w("initData---", intent + "");
         if (intent != null) {
             List<String> imagePathList = intent.getStringArrayListExtra("image_path");
             if (imagePathList != null && imagePathList.size() > 0) {
