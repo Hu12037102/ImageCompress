@@ -34,7 +34,6 @@ import utils.LogUtils;
 
 public class PreviewImageActivity extends BaseActivity {
 
-    private PhotoView mPreviewImage;
     private PreviewAdapter mAdapter;
     private ViewPager mViewPager;
 
@@ -48,7 +47,6 @@ public class PreviewImageActivity extends BaseActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setEnterTransition(new Fade().setDuration(1000));
         }
-        mPreviewImage =  findViewById(R.id.preview_iv);
         mViewPager = findViewById(R.id.vp);
     }
 
@@ -73,7 +71,7 @@ public class PreviewImageActivity extends BaseActivity {
             List<String> imagePathList = intent.getStringArrayListExtra("image_path");
             if (imagePathList != null && imagePathList.size() > 0) {
                 if (mAdapter == null){
-                    mAdapter = new PreviewAdapter(imagePathList);
+                    mAdapter = new PreviewAdapter(imagePathList,this);
                     mViewPager.setAdapter(mAdapter);
                     mViewPager.setPageTransformer(true,new PreviewAdapter.PreviewPageTransformer());
 
@@ -89,16 +87,7 @@ public class PreviewImageActivity extends BaseActivity {
 
     @Override
     protected void initEvent() {
-        mPreviewImage.setOnPhotoTapListener(new OnPhotoTapListener() {
-            @Override
-            public void onPhotoTap(ImageView view, float x, float y) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    finishAfterTransition();
-                }else {
-                    finish();
-                }
-            }
-        });
+
     }
 
 

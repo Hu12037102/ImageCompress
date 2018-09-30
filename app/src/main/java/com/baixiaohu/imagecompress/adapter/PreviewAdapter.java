@@ -1,15 +1,19 @@
 package com.baixiaohu.imagecompress.adapter;
 
+import android.app.Activity;
 import android.content.res.Resources;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.baixiaohu.imagecompress.utils.GlideUtils;
 import com.bumptech.glide.Glide;
+import com.github.chrisbanes.photoview.OnPhotoTapListener;
 import com.github.chrisbanes.photoview.PhotoView;
 
 import java.util.List;
@@ -17,9 +21,11 @@ import java.util.List;
 public class PreviewAdapter extends PagerAdapter {
     private List<String> mFilePathData;
     private int mChildCount;
+    private Activity mActivity;
 
-    public PreviewAdapter(List<String> filePathData) {
+    public PreviewAdapter(List<String> filePathData, @NonNull Activity activity) {
         this.mFilePathData = filePathData;
+        this.mActivity = activity;
     }
 
     @Override
@@ -57,6 +63,16 @@ public class PreviewAdapter extends PagerAdapter {
         layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
         photoView.setLayoutParams(layoutParams);
         GlideUtils.showImage(container.getContext(), mFilePathData.get(position), photoView);
+        photoView.setOnPhotoTapListener(new OnPhotoTapListener() {
+            @Override
+            public void onPhotoTap(ImageView view, float x, float y) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    mActivity.finishAfterTransition();
+                }else {
+                    mActivity.finish();
+                }
+            }
+        });
         return photoView;
     }
 
