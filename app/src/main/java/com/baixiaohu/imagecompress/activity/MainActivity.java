@@ -212,7 +212,7 @@ public class MainActivity extends BaseActivity {
         super.onDestroy();
         CompressImageTask.getInstance(this).onRecycle();
     }
-    /*@Override
+    @Override
     public void onBackPressed() {
         if (mExitDialog == null) {
             mExitDialog = new ExitDialog(this);
@@ -230,5 +230,5 @@ public class MainActivity extends BaseActivity {
                 System.gc();
             }
         });
-    }*/
+    }
 }

@@ -22,9 +22,9 @@ ext {
             leakcanaryAndroidNoOp    : "1.6.1",
             leakcanarySupportFragment: "1.6.1",
             supportV4                : "27.1.1",
-            rxjava:"2.2.0",
-            rxandroid:"2.1.0",
-            rxlifecycleComponents:"2.2.2"
+            rxjava:"2.0.0",
+            rxandroid:"2.0.0",
+            rxlifecycleComponents:"2.1.0"
 
     ]
 
@@ -45,6 +45,8 @@ ext {
             rxjava:"io.reactivex.rxjava2:rxjava:${dependVersion.rxjava}",
             rxandroid: "io.reactivex.rxjava2:rxandroid:${dependVersion.rxandroid}",
             rxlifecycleComponents:"com.trello.rxlifecycle2:rxlifecycle-components:${dependVersion.rxlifecycleComponents}"
+           // rxlifecycleComponents:"com.trello.rxlifecycle2:rxlifecycle-android:${dependVersion.rxlifecycleComponents}"
+            //implementation 'com.trello.rxlifecycle2:rxlifecycle-android:2.2.2'
 
 
     ]

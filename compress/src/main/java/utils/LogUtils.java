@@ -2,6 +2,8 @@ package utils;
 
 import android.util.Log;
 
+import com.baixiaohu.compress.BuildConfig;
+
 /**
  * 项  目 :  ImageCompress
  * 包  名 :  com.baixiaohu.compress.utils
@@ -12,7 +14,7 @@ import android.util.Log;
  */
 
 public class LogUtils {
-    private static final boolean isDebug = true;
+    private static final boolean isDebug = BuildConfig.DEBUG;
 
     public static void w(String TAG, String msg) {
         if (isDebug) {
