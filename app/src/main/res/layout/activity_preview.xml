@@ -6,10 +6,15 @@
     android:fitsSystemWindows="false"
     android:clipToPadding="false"
     >
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:transitionName="@string/preview"/>
 <com.github.chrisbanes.photoview.PhotoView
     android:id="@+id/preview_iv"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:transitionName="@string/preview"
+   android:visibility="gone"
     />
 </android.support.constraint.ConstraintLayout>

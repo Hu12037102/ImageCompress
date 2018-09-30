@@ -3,16 +3,21 @@ package com.baixiaohu.imagecompress.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
+import android.support.v4.view.ViewPager;
 import android.transition.Fade;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.baixiaohu.imagecompress.R;
+import com.baixiaohu.imagecompress.adapter.PreviewAdapter;
 import com.baixiaohu.imagecompress.base.BaseActivity;
 import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.OnPhotoTapListener;
 import com.github.chrisbanes.photoview.PhotoView;
+
+import java.util.List;
 
 import utils.LogUtils;
 
@@ -30,6 +35,8 @@ import utils.LogUtils;
 public class PreviewImageActivity extends BaseActivity {
 
     private PhotoView mPreviewImage;
+    private PreviewAdapter mAdapter;
+    private ViewPager mViewPager;
 
     @Override
     protected int getLayoutId() {
@@ -42,6 +49,7 @@ public class PreviewImageActivity extends BaseActivity {
             getWindow().setEnterTransition(new Fade().setDuration(1000));
         }
         mPreviewImage =  findViewById(R.id.preview_iv);
+        mViewPager = findViewById(R.id.vp);
     }
 
 
@@ -54,24 +62,28 @@ public class PreviewImageActivity extends BaseActivity {
                 finish();
                 return;
             }
-            View view = window.getDecorView();
-            int option = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-            view.setSystemUiVisibility(option);
-            getWindow().setNavigationBarColor(Color.TRANSPARENT);
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
+          window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
     }
 
     @Override
     protected void initData() {
         Intent intent = getIntent();
+
+
         LogUtils.w("initData---", intent + "");
         if (intent != null) {
-            String imagePath = intent.getStringExtra("image_path");
-            if (imagePath != null) {
-                Glide.with(this).load(imagePath).into(mPreviewImage);
+            List<String> imagePathList = intent.getStringArrayListExtra("image_path");
+            if (imagePathList != null && imagePathList.size() > 0) {
+                if (mAdapter == null){
+                    mAdapter = new PreviewAdapter(imagePathList);
+                    mViewPager.setAdapter(mAdapter);
+                    mViewPager.setPageTransformer(true,new PreviewAdapter.PreviewPageTransformer());
+
+                }else {
+                    mAdapter.notifyDataSetChanged();
+                }
+
             } else {
                 finish();
             }

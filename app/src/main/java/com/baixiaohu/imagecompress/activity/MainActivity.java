@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import utils.FileUtils;
@@ -46,6 +47,7 @@ public class MainActivity extends BaseActivity {
     private static final String IMAGE_PATH_KEY = "image_path";
     private File mCompressImageFile;
     private ExitDialog mExitDialog;
+    private List<String> mFilePathData;
 
     @Override
     protected int getLayoutId() {
@@ -60,6 +62,7 @@ public class MainActivity extends BaseActivity {
         mCompressText = findViewById(R.id.compress_tv);
         mChooseView = findViewById(R.id.choose_btn);
         mCompressView = findViewById(R.id.compress_btn);
+
     }
 
     @Override
@@ -93,7 +96,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-
+        mFilePathData = new ArrayList<>();
     }
 
 
@@ -138,7 +141,7 @@ public class MainActivity extends BaseActivity {
     private void toPreviewActivity(View view, ImageView imageView, File imageFile) {
         if (imageView.getDrawable() != null && FileUtils.isImageFile(imageFile)) {
             Intent intent = new Intent(this, PreviewImageActivity.class);
-            intent.putExtra(MainActivity.IMAGE_PATH_KEY, imageFile.getAbsolutePath());
+            intent.putStringArrayListExtra(MainActivity.IMAGE_PATH_KEY, (ArrayList<String>) mFilePathData);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(this, Pair.create(view, "share")
                         , Pair.create(view, getString(R.string.preview))).toBundle();
@@ -159,6 +162,7 @@ public class MainActivity extends BaseActivity {
                         @Override
                         public void resultFileSucceed(File file) {
                             mCompressImageFile = file;
+                            mFilePathData.add(file.getAbsolutePath());
                             if (!MainActivity.this.isFinishing()) {
                                 Glide.with(MainActivity.this).load(file).into(mCompressImageView);
                             }
@@ -193,6 +197,7 @@ public class MainActivity extends BaseActivity {
         if (mCompressImageView.getDrawable() != null) {
             mCompressImageView.setImageDrawable(null);
         }
+        mFilePathData.clear();
 
     }
 
@@ -202,6 +207,7 @@ public class MainActivity extends BaseActivity {
         super.imageFileResult(bean);
         if (bean != null) {
             mImageFile = bean.imageFile;
+            mFilePathData.add(bean.imageFile.getAbsolutePath());
             Glide.with(this).load(bean.imageFile).into(mImageView);
             mRawText.setText("Size:" + FileUtils.imageSize(mImageFile.length()));
         }
