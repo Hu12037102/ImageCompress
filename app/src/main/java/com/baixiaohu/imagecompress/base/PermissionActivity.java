@@ -1,5 +1,6 @@
 package com.baixiaohu.imagecompress.base;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,6 +17,7 @@ import android.widget.Button;
 
 import com.baixiaohu.imagecompress.permission.IntentUtils;
 import com.baixiaohu.imagecompress.permission.imp.OnPermissionsResult;
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,12 +34,13 @@ import java.util.List;
  * @author ：
  */
 
-public class PermissionActivity extends AppCompatActivity {
+@SuppressLint("Registered")
+public class PermissionActivity extends RxAppCompatActivity {
     private AlertDialog mForbidDialog;
     private static final int REQUEST_CODE = 100;
-    private static List<String> mAllowList = new ArrayList<>();
-    private static List<String> mNoAllowList = new ArrayList<>();
-    private static List<String> mForbidList = new ArrayList<>();
+    private  List<String> mAllowList = new ArrayList<>();
+    private  List<String> mNoAllowList = new ArrayList<>();
+    private  List<String> mForbidList = new ArrayList<>();
     private OnPermissionsResult mOnPermissionsResult;
     private String[] mPermissions;
 

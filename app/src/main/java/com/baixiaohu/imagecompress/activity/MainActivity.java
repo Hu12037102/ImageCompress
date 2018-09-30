@@ -42,7 +42,7 @@ public class MainActivity extends BaseActivity {
     private TextView mRawText, mCompressText;
     private View mChooseView, mCompressView;
     private File mImageFile;
-    private boolean mIsCompress;
+   // private boolean mIsCompress;
     private static final String IMAGE_PATH_KEY = "image_path";
     private File mCompressImageFile;
     private ExitDialog mExitDialog;
@@ -154,8 +154,7 @@ public class MainActivity extends BaseActivity {
             Toast.makeText(getApplicationContext(), "请先选择图片", Toast.LENGTH_SHORT).show();
         } else {
             if (FileUtils.isImageFile(mImageFile)) {
-                if (!mIsCompress) {
-                    mIsCompress = true;
+                if (!CompressImageTask.getInstance(this).isCompressImage()) {
                     CompressImageTask.getInstance(MainActivity.this).compressImage(new ImageConfig(mImageFile.getAbsolutePath()), new CompressImageTask.OnImageResult() {
                         @Override
                         public void resultFileSucceed(File file) {
@@ -164,12 +163,10 @@ public class MainActivity extends BaseActivity {
                                 Glide.with(MainActivity.this).load(file).into(mCompressImageView);
                             }
                             mCompressText.setText("Size:" + FileUtils.imageSize(file.length()));
-                            mIsCompress = false;
                         }
 
                         @Override
                         public void resultFileError() {
-                            mIsCompress = false;
                         }
                     });
                 } else {
@@ -211,6 +208,11 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        CompressImageTask.getInstance(this).onRecycle();
+    }
+    /*@Override
     public void onBackPressed() {
         if (mExitDialog == null) {
             mExitDialog = new ExitDialog(this);
@@ -228,5 +230,5 @@ public class MainActivity extends BaseActivity {
                 System.gc();
             }
         });
-    }
+    }*/
 }

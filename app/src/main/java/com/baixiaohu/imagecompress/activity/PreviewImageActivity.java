@@ -6,13 +6,14 @@ import android.os.Build;
 import android.transition.Fade;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 
 import com.baixiaohu.imagecompress.R;
 import com.baixiaohu.imagecompress.base.BaseActivity;
 import com.bumptech.glide.Glide;
+import com.github.chrisbanes.photoview.OnPhotoTapListener;
+import com.github.chrisbanes.photoview.PhotoView;
 
-import uk.co.senab.photoview.PhotoView;
-import uk.co.senab.photoview.PhotoViewAttacher;
 import utils.LogUtils;
 
 /**
@@ -79,9 +80,9 @@ public class PreviewImageActivity extends BaseActivity {
 
     @Override
     protected void initEvent() {
-        mPreviewImage.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
+        mPreviewImage.setOnPhotoTapListener(new OnPhotoTapListener() {
             @Override
-            public void onViewTap(View view, float x, float y) {
+            public void onPhotoTap(ImageView view, float x, float y) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     finishAfterTransition();
                 }else {

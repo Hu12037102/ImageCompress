@@ -6,7 +6,7 @@
     android:fitsSystemWindows="false"
     android:clipToPadding="false"
     >
-<uk.co.senab.photoview.PhotoView
+<com.github.chrisbanes.photoview.PhotoView
     android:id="@+id/preview_iv"
     android:layout_width="match_parent"
     android:layout_height="match_parent"

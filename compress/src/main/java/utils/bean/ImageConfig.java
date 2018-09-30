@@ -9,7 +9,7 @@ package utils.bean;
  * 描  述 :  ${TODO} 图片处理bean类
  */
 
-public class ImageConfig {
+public class ImageConfig{
     /**
      * 压缩默认宽为720px
      */

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.support.multidex.MultiDexApplication;
 
 import com.baixiaohu.imagecompress.toast.Toasts;
+import com.squareup.leakcanary.LeakCanary;
 
 /**
  * 项  目 :  ImageCompress
@@ -25,6 +26,13 @@ public class BaseApplication extends MultiDexApplication {
     }
 
     private void init() {
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(this);
         Toasts.init(this);
+
     }
 }

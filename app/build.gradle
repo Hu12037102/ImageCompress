@@ -1,14 +1,17 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
+
     defaultConfig {
+        def versions = rootProject.ext.android
+        compileSdkVersion versions.compileSdkVersion
         applicationId "com.baixiaohu.imagecompress"
-        minSdkVersion 15
-        targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion versions.minSdkVersion
+        targetSdkVersion versions.targetSdkVersion
+        versionCode versions.versionCode
+        versionName versions.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        buildToolsVersion versions.buildToolsVersion
     }
     buildTypes {
         release {
@@ -16,22 +19,29 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    buildToolsVersion '26.0.3'
+
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:27.0.2'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    compile 'com.github.bumptech.glide:glide:4.4.0'
-    implementation 'com.android.support:design:27.0.2'
+    def versions = rootProject.ext.dependencies
+    //noinspection GradleCompatible
+    implementation versions.appcompatV7
+    implementation versions.constraint
+    testImplementation versions.junit
+    androidTestImplementation versions.runner
+    androidTestImplementation versions.espresso
+    implementation versions.glide
+    implementation versions.design
     implementation project(':compress')
     implementation files('libs/systembartint-1.0.4.jar')
-    implementation 'com.github.chrisbanes:PhotoView:1.2.7'
-    compile 'com.android.support:multidex:1.0.1'
+    implementation versions.PhotoView
+    implementation versions.multidex
+    debugImplementation versions.leakcanaryAndroid
+    releaseImplementation versions.leakcanaryAndroidNoOp
+    debugImplementation versions.leakcanarySupportFragment
+    implementation versions.supportV4
+
 }
 allprojects {
     repositories {

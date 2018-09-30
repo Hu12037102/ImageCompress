@@ -1,0 +1,53 @@
+ext {
+    android = [
+            compileSdkVersion: 27,
+            minSdkVersion    : 15,
+            targetSdkVersion : 27,
+            versionCode      : 1,
+            versionName      : "1.0",
+            buildToolsVersion: "26.0.3"
+    ]
+
+    dependVersion = [
+            appcompat                : "27.1.1",
+            constraint               : "1.0.2",
+            junit                    : "4.12",
+            runner                   : "1.0.1",
+            espresso                 : "3.0.1",
+            glide                    : "4.8.0",
+            design                   : "27.1.1",
+            PhotoView                : "2.0.0",
+            multidex                 : "1.0.3",
+            leakcanaryAndroid        : "1.6.1",
+            leakcanaryAndroidNoOp    : "1.6.1",
+            leakcanarySupportFragment: "1.6.1",
+            supportV4                : "27.1.1",
+            rxjava:"2.2.0",
+            rxandroid:"2.1.0",
+            rxlifecycleComponents:"2.2.2"
+
+    ]
+
+    dependencies = [
+            appcompatV7              : "com.android.support:appcompat-v7:${dependVersion.appcompat}",
+            constraint               : "com.android.support.constraint:constraint-layout:${dependVersion.constraint}",
+            junit                    : "junit:junit:${dependVersion.junit}",
+            runner                   : "com.android.support.test:runner:${dependVersion.runner}",
+            espresso                 : "com.android.support.test.espresso:espresso-core:${dependVersion.espresso}",
+            glide                    : "com.github.bumptech.glide:glide:${dependVersion.glide}",
+            design                   : "com.android.support:design:${dependVersion.design}",
+            PhotoView                : "com.github.chrisbanes:PhotoView:${dependVersion.PhotoView}",
+            multidex                 : "com.android.support:multidex:${dependVersion.multidex}",
+            leakcanaryAndroid        : "com.squareup.leakcanary:leakcanary-android:${dependVersion.leakcanaryAndroid}",
+            leakcanaryAndroidNoOp    : "com.squareup.leakcanary:leakcanary-android-no-op:${dependVersion.leakcanaryAndroidNoOp}",
+            leakcanarySupportFragment: "com.squareup.leakcanary:leakcanary-support-fragment:${dependVersion.leakcanarySupportFragment}",
+            supportV4                : "com.android.support:support-v4:${dependVersion.supportV4}",
+            rxjava:"io.reactivex.rxjava2:rxjava:${dependVersion.rxjava}",
+            rxandroid: "io.reactivex.rxjava2:rxandroid:${dependVersion.rxandroid}",
+            rxlifecycleComponents:"com.trello.rxlifecycle2:rxlifecycle-components:${dependVersion.rxlifecycleComponents}"
+
+
+    ]
+
+
+}
