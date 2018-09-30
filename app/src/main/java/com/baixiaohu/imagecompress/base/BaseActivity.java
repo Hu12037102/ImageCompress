@@ -50,6 +50,7 @@ public abstract class BaseActivity extends CameraActivity {
 
     protected abstract int getLayoutId();
 
+
     protected abstract void initView();
 
     protected abstract void initData();
