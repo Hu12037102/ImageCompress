@@ -12,6 +12,7 @@ import android.widget.ImageView;
 
 import com.baixiaohu.imagecompress.R;
 import com.baixiaohu.imagecompress.adapter.PreviewAdapter;
+import com.baixiaohu.imagecompress.api.Contast;
 import com.baixiaohu.imagecompress.base.BaseActivity;
 import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.OnPhotoTapListener;
@@ -68,11 +69,12 @@ public class PreviewImageActivity extends BaseActivity {
     protected void initData() {
         Intent intent = getIntent();
         if (intent != null) {
-            List<String> imagePathList = intent.getStringArrayListExtra("image_path");
+            List<String> imagePathList = intent.getStringArrayListExtra(Contast.IMAGE_PATH_KEY);
             if (imagePathList != null && imagePathList.size() > 0) {
                 if (mAdapter == null){
                     mAdapter = new PreviewAdapter(imagePathList,this);
                     mViewPager.setAdapter(mAdapter);
+                    mViewPager.setCurrentItem( intent.getIntExtra(Contast.CLICK_IMAGE_POSITION_KEY,0),true);
                     mViewPager.setPageTransformer(true,new PreviewAdapter.PreviewPageTransformer());
 
                 }else {

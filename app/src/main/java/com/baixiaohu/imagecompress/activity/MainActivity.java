@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baixiaohu.imagecompress.api.Contast;
 import com.baixiaohu.imagecompress.base.BaseActivity;
 
 import com.baixiaohu.imagecompress.R;
@@ -44,7 +45,9 @@ public class MainActivity extends BaseActivity {
     private View mChooseView, mCompressView;
     private File mImageFile;
    // private boolean mIsCompress;
-    private static final String IMAGE_PATH_KEY = "image_path";
+
+    private int mClickPosition;
+
     private File mCompressImageFile;
     private ExitDialog mExitDialog;
     private List<String> mFilePathData;
@@ -119,12 +122,14 @@ public class MainActivity extends BaseActivity {
         mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mClickPosition = 0;
                 clickRawImage(view);
             }
         });
         mCompressImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mClickPosition = 1;
                 clickCompressImage(view);
             }
         });
@@ -141,7 +146,8 @@ public class MainActivity extends BaseActivity {
     private void toPreviewActivity(View view, ImageView imageView, File imageFile) {
         if (imageView.getDrawable() != null && FileUtils.isImageFile(imageFile)) {
             Intent intent = new Intent(this, PreviewImageActivity.class);
-            intent.putStringArrayListExtra(MainActivity.IMAGE_PATH_KEY, (ArrayList<String>) mFilePathData);
+            intent.putStringArrayListExtra(Contast.IMAGE_PATH_KEY, (ArrayList<String>) mFilePathData);
+            intent.putExtra(Contast.CLICK_IMAGE_POSITION_KEY,mClickPosition);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(this, Pair.create(view, "share")
                         , Pair.create(view, getString(R.string.preview))).toBundle();
