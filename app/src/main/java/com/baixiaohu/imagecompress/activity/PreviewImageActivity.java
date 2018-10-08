@@ -14,6 +14,7 @@ import com.baixiaohu.imagecompress.R;
 import com.baixiaohu.imagecompress.adapter.PreviewAdapter;
 import com.baixiaohu.imagecompress.api.Contast;
 import com.baixiaohu.imagecompress.base.BaseActivity;
+import com.baixiaohu.imagecompress.weight.PreviewPager;
 import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.OnPhotoTapListener;
 import com.github.chrisbanes.photoview.PhotoView;
@@ -36,7 +37,7 @@ import utils.LogUtils;
 public class PreviewImageActivity extends BaseActivity {
 
     private PreviewAdapter mAdapter;
-    private ViewPager mViewPager;
+    private PreviewPager mViewPager;
 
     @Override
     protected int getLayoutId() {

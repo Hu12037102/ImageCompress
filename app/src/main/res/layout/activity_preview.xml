@@ -6,7 +6,7 @@
     android:fitsSystemWindows="false"
     android:clipToPadding="false"
     >
-    <android.support.v4.view.ViewPager
+    <com.baixiaohu.imagecompress.weight.PreviewPager
         android:id="@+id/vp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
