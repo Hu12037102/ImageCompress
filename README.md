@@ -1,7 +1,7 @@
 # ImageCompress
 由于公司项目APP对图片的处理较多，刚开始上手，到处OOM，实在让人脑壳疼！项目迭代到今天有10个月吧！对图片处理也有一些深刻的理解！看了市面上的传统压缩方法！压缩质量虽然可以，但是有些图片失真严重。故此，写一个图片压缩框架，供大家参考，欢迎提意见！
 ## 运行效果预览
-![压缩运行效果预览](https://github.com/Hu12037102/ImageCompress/tree/master/app/src/preview.jpg)
+![压缩运行效果预览](https://github.com/Hu12037102/ImageCompress/tree/master/preview.jpg)
 ### 使用方法（很简单：简直能用一行代码解决）
 拓展性强：
 </br>1、可以自定义压缩图片的宽高（默认：1280*720）；
@@ -61,7 +61,7 @@ CompressImageTask.getInstance(MainActivity.this)
 /**
  *压缩生成bitmap
  * @param imageConfig  bean
- * @param onBitmapResult  bitnap结果回调
+ * @param onBitmapResult  bitmap结果回调
  */ 
   CompressImageTask.getInstance(this)
   .compressBitmap(new ImageConfig(mImageFile.getAbsolutePath()), new CompressImageTask.OnBitmapResult() {
