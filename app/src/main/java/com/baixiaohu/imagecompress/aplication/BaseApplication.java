@@ -1,9 +1,9 @@
 package com.baixiaohu.imagecompress.aplication;
 
-import android.app.Application;
 import android.support.multidex.MultiDexApplication;
 
 import com.baixiaohu.imagecompress.toast.Toasts;
+import utils.UiUtils;
 import com.squareup.leakcanary.LeakCanary;
 
 /**
@@ -33,6 +33,7 @@ public class BaseApplication extends MultiDexApplication {
         }
         LeakCanary.install(this);
         Toasts.init(this);
+        UiUtils.init(this);
 
     }
 }

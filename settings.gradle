@@ -1,1 +1,1 @@
-include ':app', ':compress'
+include ':app', ':compress',':matisse'

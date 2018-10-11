@@ -53,6 +53,12 @@ public class PreviewAdapter extends PagerAdapter {
         return view == object;
     }
 
+    @Override
+    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+        super.destroyItem(container, position, object);
+        container.removeView((View) object);
+    }
+
     @NonNull
     @Override
     public PhotoView instantiateItem(@NonNull ViewGroup container, int position) {

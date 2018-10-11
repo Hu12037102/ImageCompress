@@ -1,27 +1,18 @@
 package com.baixiaohu.imagecompress.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
-import android.support.v4.view.ViewPager;
 import android.transition.Fade;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageView;
 
 import com.baixiaohu.imagecompress.R;
 import com.baixiaohu.imagecompress.adapter.PreviewAdapter;
 import com.baixiaohu.imagecompress.api.Contast;
 import com.baixiaohu.imagecompress.base.BaseActivity;
 import com.baixiaohu.imagecompress.weight.PreviewPager;
-import com.bumptech.glide.Glide;
-import com.github.chrisbanes.photoview.OnPhotoTapListener;
-import com.github.chrisbanes.photoview.PhotoView;
 
 import java.util.List;
-
-import utils.LogUtils;
 
 /**
  * 项  目 :  ImageCompress
@@ -41,7 +32,7 @@ public class PreviewImageActivity extends BaseActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_preview;
+        return R.layout.item_preview_pager;
     }
 
     @Override

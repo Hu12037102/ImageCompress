@@ -2,22 +2,22 @@ package com.baixiaohu.imagecompress.base;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Toast;
 
-import com.baixiaohu.imagecompress.activity.MainActivity;
-import com.baixiaohu.imagecompress.base.PermissionActivity;
 import com.baixiaohu.imagecompress.bean.ImageFileBean;
 import com.baixiaohu.imagecompress.dialog.PhotoDialog;
 import com.baixiaohu.imagecompress.permission.imp.OnPermissionsResult;
 import com.baixiaohu.imagecompress.toast.Toasts;
-import com.bumptech.glide.Glide;
+import com.zhihu.matisse.Matisse;
+import com.zhihu.matisse.MimeType;
+import com.zhihu.matisse.engine.impl.GlideEngine;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import utils.FileUtils;
@@ -36,6 +36,7 @@ import utils.LogUtils;
 
 public abstract class CameraActivity extends PermissionActivity {
 
+    public static final int REQUEST_CODE_CHOOSE = 1000;
     private PhotoDialog mPhotoDialog;
     private static final int PICK_IMAGE_REQUEST_CODE = 100;
     private static final int OPEN_CAMERA_REQUEST_CODE = 101;
@@ -88,7 +89,7 @@ public abstract class CameraActivity extends PermissionActivity {
         LogUtils.w("onResume--", "onResume");
     }
 
-    protected void openPhoto() {
+    protected void openPhoto(final boolean isSingChoice) {
         if (mPhotoDialog == null) {
             mPhotoDialog = new PhotoDialog(this);
         }
@@ -105,7 +106,11 @@ public abstract class CameraActivity extends PermissionActivity {
             @Override
             public void onClickAlbum(View view) {
                 mPhotoDialog.dismiss();
-                openAlbum();
+                if (isSingChoice) {
+                    openAlbum();
+                } else {
+                    openZhiHuAlbum();
+                }
             }
 
             @Override
@@ -113,6 +118,17 @@ public abstract class CameraActivity extends PermissionActivity {
                 mPhotoDialog.dismiss();
             }
         });
+    }
+
+    protected void openZhiHuAlbum() {
+        Matisse.from(this)
+                .choose(MimeType.ofImage())
+                .countable(true)
+                .maxSelectable(9)
+                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                .thumbnailScale(0.85f)
+                .imageEngine(new GlideEngine())
+                .forResult(REQUEST_CODE_CHOOSE);
     }
 
     @Override
@@ -147,6 +163,26 @@ public abstract class CameraActivity extends PermissionActivity {
                         imageFileResult(bean);
 
                     }
+                } else if (requestCode == REQUEST_CODE_CHOOSE) {
+                    List<String> pathData = Matisse.obtainPathResult(data);
+                    if (pathData == null || pathData.size() == 0)
+                        return;
+                    List<ImageFileBean> imageFileBeanList = new ArrayList<>();
+                    for (String path : pathData) {
+                        if (path == null) {
+                            return;
+                        }
+                        File file = new File(path);
+                        if (FileUtils.isImageFile(file)) {
+                            ImageFileBean imageFileBean = new ImageFileBean();
+                            imageFileBean.isImage = true;
+                            imageFileBean.imageSize = FileUtils.imageSize(file.length());
+                            imageFileBean.imageFile = file;
+                            imageFileBeanList.add(imageFileBean);
+                        }
+                    }
+
+                    imageFilesResult(imageFileBeanList);
                 }
                 break;
             default:
@@ -158,4 +194,8 @@ public abstract class CameraActivity extends PermissionActivity {
     protected void imageFileResult(ImageFileBean bean) {
 
     }
+
+    protected void imageFilesResult(List<ImageFileBean> data) {
+    }
+
 }

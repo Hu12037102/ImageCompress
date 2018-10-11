@@ -52,6 +52,7 @@ dependencies {
     //noinspection GradleCompatible
     implementation versions.appcompatV7
     implementation versions.constraint
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     testImplementation versions.junit
     androidTestImplementation versions.runner
     androidTestImplementation versions.espresso
@@ -66,6 +67,7 @@ dependencies {
     debugImplementation versions.leakcanarySupportFragment
     implementation versions.supportV4
     implementation versions.rxlifecycleComponents
+    implementation project(':matisse')
 }
 allprojects {
     repositories {
@@ -73,4 +75,3 @@ allprojects {
         maven { url "https://jitpack.io" }
     }
 }
-
