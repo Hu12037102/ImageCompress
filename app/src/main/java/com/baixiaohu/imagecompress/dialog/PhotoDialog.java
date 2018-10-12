@@ -102,6 +102,7 @@ public class PhotoDialog extends Dialog {
         layoutParams.width = dm.widthPixels;
         layoutParams.gravity = Gravity.BOTTOM;
         window.setAttributes(layoutParams);
+        window.setWindowAnimations(R.style.DialogAnimation);
     }
 
     public interface OnPhotoDialogItemClickListener {

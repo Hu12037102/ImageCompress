@@ -14,7 +14,11 @@
 
     <style name="DialogStyle" parent="Theme.AppCompat.Dialog">
         <item name="android:windowBackground">@color/color00000000</item>
-        <item name="android:windowShowAnimation">@android:anim/slide_in_left</item>
+
+    </style>
+    <style name="DialogAnimation" parent="android:Animation.Dialog">
+        <item name="android:windowEnterAnimation">@anim/anim_dialog_in</item>
+        <item name="android:windowExitAnimation">@anim/anim_dialog_out</item>
     </style>
 
     <style name="PhotoDialogItem">

@@ -139,7 +139,7 @@ public class PermissionActivity extends RxAppCompatActivity {
     protected void showForbidPermissionDialog(@NonNull String name) {
         if (mForbidDialog == null) {
             mForbidDialog = new AlertDialog.Builder(this).setTitle("需要获取" + name + "权限")
-                    .setMessage("需要获取" + name + "权限，否则无法正常使用功能；设置路径：设置-应用-易直帮-权限")
+                    .setMessage("需要获取" + name + "权限，否则无法正常使用功能；设置路径：设置-应用-ImageCompress-权限")
                     .setPositiveButton("确定", null)
                     .setNegativeButton("取消", null)
                     .setCancelable(false).create();
