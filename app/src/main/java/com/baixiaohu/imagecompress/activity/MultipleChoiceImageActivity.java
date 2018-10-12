@@ -106,7 +106,7 @@ public class MultipleChoiceImageActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (mOriginalPictureList.size() == 1) {
-                    Toasts.show("请先选择照片！");
+                    Toasts.show("请先选择照片");
                     return;
                 }
                 if (CompressImageTask.getInstance().isCompressImage()){
