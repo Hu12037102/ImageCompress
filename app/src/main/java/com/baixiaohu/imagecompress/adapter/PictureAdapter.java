@@ -15,6 +15,8 @@ import com.baixiaohu.imagecompress.bean.ImageFileBean;
 import com.baixiaohu.imagecompress.utils.GlideUtils;
 import utils.UiUtils;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.ViewHolder> {
@@ -37,6 +39,8 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.ViewHold
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_picture_view, parent, false));
     }
+
+
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {

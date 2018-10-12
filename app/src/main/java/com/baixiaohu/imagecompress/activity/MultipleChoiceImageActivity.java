@@ -18,8 +18,8 @@ import com.baixiaohu.imagecompress.bean.ImageFileBean;
 import com.baixiaohu.imagecompress.toast.Toasts;
 
 import java.io.File;
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import utils.FileUtils;
@@ -67,37 +67,25 @@ public class MultipleChoiceImageActivity extends BaseActivity {
         mCompressPictureList = new ArrayList<>();
         mCompressAdapter = new PictureAdapter(this, mCompressPictureList);
         mRlCompress.setAdapter(mCompressAdapter);
-
-
     }
 
     @Override
     protected void initEvent() {
-        mBtnCompress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
 
         mOriginalAdapter.setOnItemClickListener(new PictureAdapter.OnItemClickListener() {
             @Override
             public void onAddItemClick(View view, int position) {
-                openPhoto(false);
+                if (!CompressImageTask.getInstance().isCompressImage()) {
+                    MultipleChoiceImageActivity.this.notifyOriginalAndCompressData();
+                    openPhoto(false);
+                }else {
+                    Toasts.show("正在压缩！请等待！");
+                }
             }
 
             @Override
             public void onPictureItemClick(View view, int position) {
-                Intent intent = new Intent(MultipleChoiceImageActivity.this, PreviewImageActivity.class);
-                intent.putStringArrayListExtra(Contast.IMAGE_PATH_KEY, (ArrayList<String>) mPreviewData);
-                intent.putExtra(Contast.CLICK_IMAGE_POSITION_KEY,position);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(MultipleChoiceImageActivity.this, Pair.create(view, "share")
-                            , Pair.create(view, getString(R.string.preview))).toBundle();
-                    startActivity(intent, bundle);
-                } else {
-                    startActivity(intent);
-                }
+                toPreviewActivity(view, position);
             }
         });
 
@@ -109,24 +97,20 @@ public class MultipleChoiceImageActivity extends BaseActivity {
 
             @Override
             public void onPictureItemClick(View view, int position) {
-                Intent intent = new Intent(MultipleChoiceImageActivity.this, PreviewImageActivity.class);
-                intent.putStringArrayListExtra(Contast.IMAGE_PATH_KEY, (ArrayList<String>) mPreviewData);
-                intent.putExtra(Contast.CLICK_IMAGE_POSITION_KEY,position);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(MultipleChoiceImageActivity.this, Pair.create(view, "share")
-                            , Pair.create(view, getString(R.string.preview))).toBundle();
-                    startActivity(intent, bundle);
-                } else {
-                    startActivity(intent);
-                }
+                toPreviewActivity(view, position);
             }
         });
+
 
         mBtnCompress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mOriginalPictureList.size() == 1) {
                     Toasts.show("请先选择照片！");
+                    return;
+                }
+                if (CompressImageTask.getInstance().isCompressImage()){
+                    Toasts.show("正在压缩！请等待！");
                     return;
                 }
                 List<ImageConfig> data = new ArrayList<>();
@@ -136,9 +120,13 @@ public class MultipleChoiceImageActivity extends BaseActivity {
                         data.add(imageConfig);
                     }
                 }
-                CompressImageTask.getInstance().compressImages(MultipleChoiceImageActivity.this,data, new CompressImageTask.OnImagesResult() {
+                CompressImageTask.getInstance().compressImages(MultipleChoiceImageActivity.this, data, new CompressImageTask.OnImagesResult() {
                     @Override
                     public void resultFilesSucceed(List<File> fileList) {
+                        if (mCompressPictureList.size() > 0) {
+                            mCompressPictureList.clear();
+                            mCompressAdapter.notifyDataSetChanged();
+                        }
                         if (fileList != null && fileList.size() > 0) {
                             mPreviewData.clear();
                             for (File file : fileList) {
@@ -163,14 +151,44 @@ public class MultipleChoiceImageActivity extends BaseActivity {
         });
     }
 
+    private void toPreviewActivity(View view, int position) {
+        Intent intent = new Intent(MultipleChoiceImageActivity.this, PreviewImageActivity.class);
+        intent.putStringArrayListExtra(Contast.IMAGE_PATH_KEY, (ArrayList<String>) mPreviewData);
+        intent.putExtra(Contast.CLICK_IMAGE_POSITION_KEY, position);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(MultipleChoiceImageActivity.this, Pair.create(view, "share")
+                    , Pair.create(view, getString(R.string.preview))).toBundle();
+            startActivity(intent, bundle);
+        } else {
+            startActivity(intent);
+        }
+    }
+
     @Override
     protected void imageFilesResult(List<ImageFileBean> data) {
         super.imageFilesResult(data);
         mOriginalPictureList.addAll(0, data);
         mOriginalAdapter.notifyDataSetChanged();
         mPreviewData.clear();
-        for (ImageFileBean imageFileBean :data){
+        for (ImageFileBean imageFileBean : data) {
             mPreviewData.add(imageFileBean.imageFile.getAbsolutePath());
         }
     }
+
+    public void notifyOriginalAndCompressData() {
+        if (mOriginalPictureList.size() > 1) {
+            Iterator<ImageFileBean> iterator = mOriginalPictureList.iterator();
+            while (iterator.hasNext()) {
+                if (iterator.next().isImage) {
+                    iterator.remove();
+                }
+            }
+            mOriginalAdapter.notifyDataSetChanged();
+        }
+        if (mCompressPictureList.size() > 0) {
+            mCompressPictureList.clear();
+            mCompressAdapter.notifyDataSetChanged();
+        }
+    }
+
 }
