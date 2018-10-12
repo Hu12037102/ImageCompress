@@ -16,7 +16,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'checkstyle'
 
-android {
+/*android {
     compileSdkVersion 27
     buildToolsVersion '27.0.3'
 
@@ -31,27 +31,54 @@ android {
     lintOptions {
         abortOnError false
     }
+}*/
+
+
+android {
+
+    defaultConfig {
+        def versions = rootProject.ext.android
+        compileSdkVersion versions.compileSdkVersion
+        minSdkVersion versions.minSdkVersion
+        targetSdkVersion versions.targetSdkVersion
+        versionCode versions.versionCode
+        versionName versions.versionName
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        buildToolsVersion versions.buildToolsVersion
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
 }
 
-ext.supportLibVersion = '27.1.1'
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    def versions = rootProject.ext.dependencies
+    implementation versions.appcompatV7
+    implementation  versions.supportV4
+    //implementation "com.android.support:support-annotations:${supportLibVersion}"
+    implementation versions.recyclerview
+    implementation versions.imagezoom
 
-    implementation "com.android.support:support-v4:${supportLibVersion}"
-    implementation "com.android.support:appcompat-v7:${supportLibVersion}"
-    implementation "com.android.support:support-annotations:${supportLibVersion}"
-    implementation "com.android.support:recyclerview-v7:${supportLibVersion}"
-    implementation 'it.sephiroth.android.library.imagezoom:library:1.0.4'
-
-    compileOnly 'com.github.bumptech.glide:glide:4.8.0'
-    compileOnly 'com.squareup.picasso:picasso:2.5.2'
+    compileOnly versions.glide
+    compileOnly versions.picasso
 }
+
+
+
+
+
 
 // jcenter configuration for novoda's bintray-release
 // $ ./gradlew clean build bintrayUpload -PbintrayUser=BINTRAY_USERNAME -PbintrayKey=BINTRAY_KEY -PdryRun=false
 
 
+/*
 task javadoc(type: Javadoc) {
     options.encoding = "utf-8"
 }
@@ -73,4 +100,4 @@ task checkstyle(type:Checkstyle) {
     showViolations true
     classpath = files()
     source 'src/main/java'
-}
+}*/

@@ -22,9 +22,12 @@ ext {
             leakcanaryAndroidNoOp    : "1.6.1",
             leakcanarySupportFragment: "1.6.1",
             supportV4                : "27.1.1",
-            rxjava:"2.0.0",
-            rxandroid:"2.0.0",
-            rxlifecycleComponents:"2.1.0"
+            rxjava                   : "2.0.0",
+            rxandroid                : "2.0.0",
+            rxlifecycleComponents    : "2.1.0",
+            recyclerview             : "27.0.0",
+            imagezoom                : "1.0.4",
+            picasso                  : "2.5.2"
 
     ]
 
@@ -42,10 +45,13 @@ ext {
             leakcanaryAndroidNoOp    : "com.squareup.leakcanary:leakcanary-android-no-op:${dependVersion.leakcanaryAndroidNoOp}",
             leakcanarySupportFragment: "com.squareup.leakcanary:leakcanary-support-fragment:${dependVersion.leakcanarySupportFragment}",
             supportV4                : "com.android.support:support-v4:${dependVersion.supportV4}",
-            rxjava:"io.reactivex.rxjava2:rxjava:${dependVersion.rxjava}",
-            rxandroid: "io.reactivex.rxjava2:rxandroid:${dependVersion.rxandroid}",
-            rxlifecycleComponents:"com.trello.rxlifecycle2:rxlifecycle-components:${dependVersion.rxlifecycleComponents}"
-           // rxlifecycleComponents:"com.trello.rxlifecycle2:rxlifecycle-android:${dependVersion.rxlifecycleComponents}"
+            rxjava                   : "io.reactivex.rxjava2:rxjava:${dependVersion.rxjava}",
+            rxandroid                : "io.reactivex.rxjava2:rxandroid:${dependVersion.rxandroid}",
+            rxlifecycleComponents    : "com.trello.rxlifecycle2:rxlifecycle-components:${dependVersion.rxlifecycleComponents}",
+            recyclerview             : "com.android.support:recyclerview-v7:${dependVersion.recyclerview}",
+            imagezoom                : "it.sephiroth.android.library.imagezoom:library:${dependVersion.imagezoom}",
+            picasso                  : "com.squareup.picasso:picasso:${dependVersion.picasso}"
+            // rxlifecycleComponents:"com.trello.rxlifecycle2:rxlifecycle-android:${dependVersion.rxlifecycleComponents}"
             //implementation 'com.trello.rxlifecycle2:rxlifecycle-android:2.2.2'
 
 

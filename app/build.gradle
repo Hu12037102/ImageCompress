@@ -1,6 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
+    lintOptions {
+        abortOnError false
+    }
+
     signingConfigs {
         release {
             keyAlias 'key'
@@ -23,7 +27,7 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("boolean", "IS_DEBUG", "false")
             //是否清理无用资源
