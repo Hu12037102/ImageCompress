@@ -42,7 +42,7 @@ public abstract class BaseActivity extends CameraActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             SystemBarTintManager sbt = new SystemBarTintManager(this);
-            sbt.setStatusBarTintColor(Color.BLACK);
+            sbt.setStatusBarTintColor(Color.TRANSPARENT);
             sbt.setStatusBarTintEnabled(true);
         }
     }
