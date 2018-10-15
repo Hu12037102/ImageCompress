@@ -21,7 +21,7 @@
 	</br>}
   </br>
   dependencies {
-	      </br>  compile 'com.github.Hu12037102:ImageCompress:1.0.2'
+	      </br>  implementation 'com.github.Hu12037102:ImageCompress:Tag'
 	</br>}
 	
 ```java
