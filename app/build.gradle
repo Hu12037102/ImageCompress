@@ -7,10 +7,10 @@ android {
 
     signingConfigs {
         release {
-            keyAlias 'key'
+            /*keyAlias 'key'
             keyPassword '123456'
             storeFile file('./key.jks')
-            storePassword '123456'
+            storePassword '123456'*/
         }
     }
     defaultConfig {
