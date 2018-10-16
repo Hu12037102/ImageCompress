@@ -83,31 +83,20 @@ public class PreviewAdapter extends PagerAdapter {
 
     public static class PreviewPageTransformer implements ViewPager.PageTransformer {
         private ViewPager viewPager;
-        private int mTranslateOffsetX = getMeasureValue(128);
 
         @Override
         public void transformPage(@NonNull View view, float position) {
             if (viewPager == null) {
                 viewPager = (ViewPager) view.getParent();
             }
-
             int leftInScreen = view.getLeft() - viewPager.getScrollX();
             float offsetRate = (float) leftInScreen * 0.08f / viewPager.getMeasuredWidth();
             float scaleFactor = 1 - Math.abs(offsetRate);
             if (scaleFactor > 0) {
                 view.setScaleX(scaleFactor);
-                //view.setScaleY(scaleFactor);
-                view.setTranslationX(-mTranslateOffsetX * offsetRate);
             }
         }
 
     }
-    private static int getMeasureValue(int px) {
-        return getScreenW() * px / 1080;
-    }
 
-    private static int getScreenW() {
-        DisplayMetrics dm = Resources.getSystem().getDisplayMetrics();
-        return dm.widthPixels;
-    }
 }
