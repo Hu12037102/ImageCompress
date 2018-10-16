@@ -64,34 +64,6 @@ public class SingChoiceImageActivity extends BaseActivity {
 
     }
 
-    @Override
-    protected void initPermission() {
-
-        requestPermission(new OnPermissionsResult() {
-            @Override
-            public void onAllow(List<String> allowPermissions) {
-                SingChoiceImageActivity.super.initPermission();
-            }
-
-            @Override
-            public void onNoAllow(List<String> noAllowPermissions) {
-                Toasts.show("内存卡读写为必要权限");
-                finish();
-            }
-
-            @Override
-            public void onForbid(List<String> noForbidPermissions) {
-                showForbidPermissionDialog("读写内存卡");
-                finish();
-            }
-
-            @Override
-            public void onLowVersion() {
-                SingChoiceImageActivity.super.initPermission();
-            }
-        }, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-    }
 
     @Override
     protected void initData() {

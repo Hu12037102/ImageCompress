@@ -1,12 +1,18 @@
 package com.baixiaohu.imagecompress.activity;
 
 
+import android.Manifest;
 import android.content.Intent;
 import android.view.View;
 
 import com.baixiaohu.imagecompress.R;
 import com.baixiaohu.imagecompress.base.BaseActivity;
 import com.baixiaohu.imagecompress.dialog.ExitDialog;
+import com.baixiaohu.imagecompress.permission.imp.OnPermissionsResult;
+import com.baixiaohu.imagecompress.toast.Toasts;
+import com.squareup.haha.perflib.Main;
+
+import java.util.List;
 
 import utils.FileUtils;
 
@@ -25,6 +31,34 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void initData() {
 
+    }
+
+    @Override
+    protected void initPermission() {
+
+        requestPermission(new OnPermissionsResult() {
+            @Override
+            public void onAllow(List<String> allowPermissions) {
+                MainActivity.super.initPermission();
+            }
+
+            @Override
+            public void onNoAllow(List<String> noAllowPermissions) {
+                Toasts.show("内存卡读写为必要权限");
+                finish();
+            }
+
+            @Override
+            public void onForbid(List<String> noForbidPermissions) {
+                showForbidPermissionDialog("读写内存卡");
+                finish();
+            }
+
+            @Override
+            public void onLowVersion() {
+                MainActivity.super.initPermission();
+            }
+        }, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     @Override
