@@ -8,6 +8,8 @@ import android.view.WindowManager;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
+import utils.task.ActivityPicker;
+
 /**
  * 项  目 :  ImageCompress
  * 包  名 :  com.baixiaohu.imagecompress
@@ -26,8 +28,10 @@ public abstract class BaseActivity extends CameraActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
+        ActivityPicker.get().addActivity(this);
         initUI();
         initPermission();
+
 
     }
 
@@ -35,6 +39,7 @@ public abstract class BaseActivity extends CameraActivity {
         initView();
         initData();
         initEvent();
+
     }
 
 
@@ -47,6 +52,12 @@ public abstract class BaseActivity extends CameraActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        ActivityPicker.get().removeActivity(getClass().getSimpleName());
+        super.onDestroy();
+
+    }
 
     protected abstract int getLayoutId();
 

@@ -14,6 +14,8 @@ import com.baixiaohu.imagecompress.weight.PreviewPager;
 
 import java.util.List;
 
+import utils.task.ActivityPicker;
+
 /**
  * 项  目 :  ImageCompress
  * 包  名 :  com.baixiaohu.imagecompress
