@@ -30,37 +30,33 @@
  * @param imageConfig   bean
  * @param onImageResult file回调数据
  */
-CompressImageTask.getInstance(MainActivity.this)
-.compressImage(new ImageConfig(mImageFile.getAbsolutePath()), new CompressImageTask.OnImageResult() {
+ CompressImageTask.getInstance().compressImage(SingChoiceImageActivity.this,new ImageConfig(mImageFile.getAbsolutePath()), new CompressImageTask.OnImageResult() {
                         @Override
-                        public void resultFileSucceed(File file) {//结果成功回调
-                            Glide.with(MainActivity.this).load(mImageFile).into(mCompressImageView);
-                            mCompressText.setText("Size:" + FileUtils.imageSize(file.length()));
+                        public void resultFileSucceed(File file) {
+                             //成功回调
                         }
 
                         @Override
-                        public void resultFileError() {//结果失败回调
-                            
+                        public void resultFileError() {
+                          //失败回调
                         }
                     });
-                    
 /**
  *压缩多张图片（集合）
  * @param list  图片集合
  * @param onImagesResult  file集合回调数据
  */
- CompressImageTask.getInstance(MainActivity.this)
-  .compressImages(list, new CompressImageTask.OnImagesResult() {
-            @Override
-            public void resultFilesSucceed(List<File> fileList) {//结果成功回调
+ CompressImageTask.getInstance().compressImages(MultipleChoiceImageActivity.this, data, new CompressImageTask.OnImagesResult() {
+                     @Override
+                     public void resultFilesSucceed(List<File> fileList) {
+                         //成功回调
+                     }
 
-            }
-
-            @Override
-            public void resultFilesError() {//结果失败回调
-
-            }
-        });
+                     @Override
+                     public void resultFilesError() {
+                         //失败回调
+                     }
+                 });
         
 /**
  *压缩生成bitmap

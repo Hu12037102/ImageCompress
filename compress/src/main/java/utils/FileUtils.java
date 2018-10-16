@@ -22,6 +22,14 @@ import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 /**
  * 项  目 :  ImageCompress
  * 包  名 :  com.baixiaohu.compress.utils
@@ -185,19 +193,29 @@ public class FileUtils {
      *
      * @param file 文件或者文件夹
      */
-    public static void deleteAllFile(@NonNull File file) {
-        if (file.exists()) {
-            if (file.isFile()) {
-                file.delete();
-            } else if (file.isDirectory()) {
-                File[] files = file.listFiles();
-                if (files != null && files.length > 0) {
-                    for (int i = 0; i < files.length; i++) {
-                        deleteAllFile(files[i]);
+    public static void deleteAllFile(final  @NonNull File file) {
+        Observable.create(new ObservableOnSubscribe<File>() {
+            @Override
+            public void subscribe(ObservableEmitter<File> e) throws Exception {
+                if (file.exists()) {
+                    if (file.isFile()) {
+                        file.delete();
+                    } else if (file.isDirectory()) {
+                        File[] files = file.listFiles();
+                        if (files != null && files.length > 0) {
+                            for (int i = 0; i < files.length; i++) {
+                                deleteAllFile(files[i]);
+                            }
+                        }
                     }
                 }
+                e.onNext(file);
+                LogUtils.w("deleteAllFile--",Thread.currentThread().getName());
             }
-        }
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+
     }
 
     public static Uri fileToUri(@NonNull Context context, @NonNull File file, @NonNull Intent intent) {
