@@ -49,6 +49,7 @@ public class MultipleChoiceImageActivity extends BaseActivity {
     private List<ImageFileBean> mCompressPictureList;
     private PictureAdapter mCompressAdapter;
     List<String> mPreviewData;
+    private int mPreviewStatus;//0、代表原图预览；1、代表也缩图预览
 
     @Override
     protected int getLayoutId() {
@@ -67,7 +68,15 @@ public class MultipleChoiceImageActivity extends BaseActivity {
             public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
                 super.onMapSharedElements(names, sharedElements);
                 LogUtils.w("initView--",PairHelp.PREVIEW_POSITION+"");
-                sharedElements.put(PairHelp.transitionName(),mRlOriginal.findViewHolderForAdapterPosition(PairHelp.PREVIEW_POSITION).itemView);
+                switch (mPreviewStatus){
+                    case 0:
+                        sharedElements.put(PairHelp.transitionName(),mRlOriginal.findViewHolderForAdapterPosition(PairHelp.PREVIEW_POSITION).itemView);
+                        break;
+                    case 1:
+                        sharedElements.put(PairHelp.transitionName(),mRlCompress.findViewHolderForAdapterPosition(PairHelp.PREVIEW_POSITION).itemView);
+                        break;
+                }
+
 
 
             }
@@ -109,6 +118,7 @@ public class MultipleChoiceImageActivity extends BaseActivity {
 
             @Override
             public void onPictureItemClick(View view, int position) {
+                mPreviewStatus = 0;
                 toPreviewActivity(view, position);
             }
         });
@@ -121,6 +131,7 @@ public class MultipleChoiceImageActivity extends BaseActivity {
 
             @Override
             public void onPictureItemClick(View view, int position) {
+                mPreviewStatus = 1;
                 toPreviewActivity(view, position);
             }
         });
