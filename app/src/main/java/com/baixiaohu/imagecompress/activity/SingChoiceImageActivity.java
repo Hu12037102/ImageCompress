@@ -4,7 +4,9 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.SharedElementCallback;
 import android.support.v4.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,11 +21,13 @@ import com.baixiaohu.imagecompress.bean.ImageFileBean;
 import com.baixiaohu.imagecompress.dialog.ExitDialog;
 import com.baixiaohu.imagecompress.permission.imp.OnPermissionsResult;
 import com.baixiaohu.imagecompress.toast.Toasts;
+import com.baixiaohu.imagecompress.utils.PairHelp;
 import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import utils.FileUtils;
 import utils.bean.ImageConfig;
@@ -32,15 +36,15 @@ import utils.task.CompressImageTask;
 
 /**
  * @author 胡小白
- *         <p>
- *         一个关于压缩图片工具类
+ * <p>
+ * 一个关于压缩图片工具类
  */
 public class SingChoiceImageActivity extends BaseActivity {
     private ImageView mImageView, mCompressImageView;
     private TextView mRawText, mCompressText;
     private View mChooseView, mCompressView;
     private File mImageFile;
-   // private boolean mIsCompress;
+    // private boolean mIsCompress;
 
     private int mClickPosition;
 
@@ -101,13 +105,33 @@ public class SingChoiceImageActivity extends BaseActivity {
                 clickCompressImage(view);
             }
         });
+        ActivityCompat.setExitSharedElementCallback(this, new SharedElementCallback() {
+            @Override
+            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+                super.onMapSharedElements(names, sharedElements);
+                switch (PairHelp.PREVIEW_POSITION) {
+                    case 0:
+                        sharedElements.put(PairHelp.transitionName(),mImageView);
+                        break;
+                    case 1:
+                        sharedElements.put(PairHelp.transitionName(),mCompressImageView);
+                        break;
+                }
+
+
+            }
+        });
     }
 
     private void clickCompressImage(View view) {
+        PairHelp.setPerviewPostion(1);
         toPreviewActivity(view, mCompressImageView, mCompressImageFile);
     }
 
+
+
     private void clickRawImage(View view) {
+        PairHelp.setPerviewPostion(0);
         toPreviewActivity(view, mImageView, mImageFile);
     }
 
@@ -115,10 +139,11 @@ public class SingChoiceImageActivity extends BaseActivity {
         if (imageView.getDrawable() != null && FileUtils.isImageFile(imageFile)) {
             Intent intent = new Intent(this, PreviewImageActivity.class);
             intent.putStringArrayListExtra(Contast.IMAGE_PATH_KEY, (ArrayList<String>) mFilePathData);
-            intent.putExtra(Contast.CLICK_IMAGE_POSITION_KEY,mClickPosition);
+            intent.putExtra(Contast.CLICK_IMAGE_POSITION_KEY, mClickPosition);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(this, Pair.create(view, "share")
-                        , Pair.create(view, getString(R.string.preview))).toBundle();
+
+                Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(this
+                        , PairHelp.addPair(view)).toBundle();
                 startActivity(intent, bundle);
             } else {
                 startActivity(intent);
@@ -132,7 +157,7 @@ public class SingChoiceImageActivity extends BaseActivity {
         } else {
             if (FileUtils.isImageFile(mImageFile)) {
                 if (!CompressImageTask.getInstance().isCompressImage()) {
-                    CompressImageTask.getInstance().compressImage(SingChoiceImageActivity.this,new ImageConfig(mImageFile.getAbsolutePath()), new CompressImageTask.OnImageResult() {
+                    CompressImageTask.getInstance().compressImage(SingChoiceImageActivity.this, new ImageConfig(mImageFile.getAbsolutePath()), new CompressImageTask.OnImageResult() {
                         @Override
                         public void resultFileSucceed(File file) {
                             mCompressImageFile = file;

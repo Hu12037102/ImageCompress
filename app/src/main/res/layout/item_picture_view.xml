@@ -9,7 +9,6 @@
         android:layout_height="wrap_content"
         android:src="@drawable/selector_picture_image"
         android:padding="10dp"
-        android:transitionName="@string/preview"
         />
     <TextView
         android:id="@+id/tv_size"

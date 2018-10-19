@@ -11,10 +11,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:transitionName="@string/preview"/>
-<com.github.chrisbanes.photoview.PhotoView
-    android:id="@+id/preview_iv"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-   android:visibility="gone"
-    />
+
 </android.support.constraint.ConstraintLayout>

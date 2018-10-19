@@ -12,11 +12,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.baixiaohu.imagecompress.utils.GlideUtils;
+import com.baixiaohu.imagecompress.utils.PairHelp;
 import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.OnPhotoTapListener;
 import com.github.chrisbanes.photoview.PhotoView;
 
 import java.util.List;
+
+import utils.LogUtils;
 
 public class PreviewAdapter extends PagerAdapter {
     private List<String> mFilePathData;
@@ -55,6 +58,8 @@ public class PreviewAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+
+
         container.removeView((View) object);
     }
 
@@ -98,5 +103,7 @@ public class PreviewAdapter extends PagerAdapter {
         }
 
     }
+
+
 
 }

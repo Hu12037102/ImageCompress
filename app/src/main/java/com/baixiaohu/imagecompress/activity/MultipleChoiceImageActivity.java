@@ -1,14 +1,22 @@
 package com.baixiaohu.imagecompress.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Matrix;
+import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.SharedElementCallback;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.baixiaohu.imagecompress.R;
 import com.baixiaohu.imagecompress.adapter.PictureAdapter;
@@ -16,13 +24,17 @@ import com.baixiaohu.imagecompress.api.Contast;
 import com.baixiaohu.imagecompress.base.BaseActivity;
 import com.baixiaohu.imagecompress.bean.ImageFileBean;
 import com.baixiaohu.imagecompress.toast.Toasts;
+import com.baixiaohu.imagecompress.utils.PairHelp;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import utils.FileUtils;
+import utils.LogUtils;
 import utils.bean.ImageConfig;
 import utils.task.CompressImageTask;
 
@@ -50,10 +62,22 @@ public class MultipleChoiceImageActivity extends BaseActivity {
         mRlCompress = findViewById(R.id.ry_compress);
         mRlCompress.setLayoutManager(new GridLayoutManager(this, 3));
         mBtnCompress = findViewById(R.id.btn_compress);
+        ActivityCompat.setExitSharedElementCallback(this, new android.support.v4.app.SharedElementCallback() {
+            @Override
+            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+                super.onMapSharedElements(names, sharedElements);
+                LogUtils.w("initView--",PairHelp.PREVIEW_POSITION+"");
+                sharedElements.put(PairHelp.transitionName(),mRlOriginal.findViewHolderForAdapterPosition(PairHelp.PREVIEW_POSITION).itemView);
+
+
+            }
+        });
     }
 
     @Override
     protected void initData() {
+
+
         mPreviewData = new ArrayList<>();
 
         mOriginalPictureList = new ArrayList<>();
@@ -100,6 +124,7 @@ public class MultipleChoiceImageActivity extends BaseActivity {
                 toPreviewActivity(view, position);
             }
         });
+
 
 
         mBtnCompress.setOnClickListener(new View.OnClickListener() {
@@ -156,13 +181,17 @@ public class MultipleChoiceImageActivity extends BaseActivity {
         intent.putStringArrayListExtra(Contast.IMAGE_PATH_KEY, (ArrayList<String>) mPreviewData);
         intent.putExtra(Contast.CLICK_IMAGE_POSITION_KEY, position);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(MultipleChoiceImageActivity.this, Pair.create(view, "share")
-                    , Pair.create(view, getString(R.string.preview))).toBundle();
+            PairHelp.setPerviewPostion(position);
+            LogUtils.w("initView-",PairHelp.PREVIEW_POSITION+"");
+            Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(MultipleChoiceImageActivity.this
+                    , PairHelp.addPair(view)).toBundle();
             startActivity(intent, bundle);
         } else {
             startActivity(intent);
         }
     }
+
+
 
     @Override
     protected void imageFilesResult(List<ImageFileBean> data) {

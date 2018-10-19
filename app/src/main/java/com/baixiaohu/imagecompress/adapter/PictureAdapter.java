@@ -2,6 +2,7 @@ package com.baixiaohu.imagecompress.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 import com.baixiaohu.imagecompress.R;
 import com.baixiaohu.imagecompress.bean.ImageFileBean;
 import com.baixiaohu.imagecompress.utils.GlideUtils;
+import com.baixiaohu.imagecompress.utils.PairHelp;
+
 import utils.UiUtils;
 
 import java.util.ArrayList;
@@ -20,6 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 
 public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.ViewHolder> {
+
+
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
@@ -46,7 +51,9 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         final ImageFileBean imageFileBean = mData.get(position);
         holder.mTvSize.setText(imageFileBean.imageSize);
+
         if (imageFileBean.isImage) {
+            PairHelp.setViewTransitionName(holder.mIvPicture);
             GlideUtils.showImage(mContext, imageFileBean.imageFile, holder.mIvPicture, R.drawable.selector_picture_image, R.drawable.selector_picture_image);
         } else {
              GlideUtils.showImage(mContext, R.drawable.selector_picture_image, holder.mIvPicture);

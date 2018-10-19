@@ -1,8 +1,14 @@
 package com.baixiaohu.imagecompress.activity;
 
+import android.app.SharedElementCallback;
 import android.content.Intent;
 import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.ViewPager;
 import android.transition.Fade;
+import android.transition.Transition;
+import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -10,10 +16,13 @@ import com.baixiaohu.imagecompress.R;
 import com.baixiaohu.imagecompress.adapter.PreviewAdapter;
 import com.baixiaohu.imagecompress.api.Contast;
 import com.baixiaohu.imagecompress.base.BaseActivity;
+import com.baixiaohu.imagecompress.utils.PairHelp;
 import com.baixiaohu.imagecompress.weight.PreviewPager;
 
 import java.util.List;
+import java.util.Map;
 
+import utils.LogUtils;
 import utils.task.ActivityPicker;
 
 /**
@@ -39,10 +48,8 @@ public class PreviewImageActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setEnterTransition(new Fade().setDuration(1000));
-        }
         mViewPager = findViewById(R.id.vp);
+
     }
 
 
@@ -67,10 +74,26 @@ public class PreviewImageActivity extends BaseActivity {
             if (imagePathList != null && imagePathList.size() > 0) {
                 if (mAdapter == null){
                     mAdapter = new PreviewAdapter(imagePathList,this);
+                    mViewPager.setOffscreenPageLimit(0);
                     mViewPager.setAdapter(mAdapter);
                     mViewPager.setCurrentItem( intent.getIntExtra(Contast.CLICK_IMAGE_POSITION_KEY,0),true);
                     mViewPager.setPageTransformer(true,new PreviewAdapter.PreviewPageTransformer());
+                    mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                        @Override
+                        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
+                        }
+
+                        @Override
+                        public void onPageSelected(int position) {
+                            PairHelp.setPerviewPostion(mViewPager.getCurrentItem());
+                        }
+
+                        @Override
+                        public void onPageScrollStateChanged(int state) {
+
+                        }
+                    });
                 }else {
                     mAdapter.notifyDataSetChanged();
                 }
@@ -81,10 +104,23 @@ public class PreviewImageActivity extends BaseActivity {
         }
     }
 
+
+
     @Override
     protected void initEvent() {
 
     }
 
+    @Override
+    protected void onDestroy() {
 
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+
+    }
 }
