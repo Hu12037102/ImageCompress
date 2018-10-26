@@ -70,7 +70,7 @@ public abstract class CameraActivity extends PermissionActivity {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         cameraIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-            mCameraFile = FileUtils.resultImageFile(this);
+            mCameraFile = FileUtils.resultImageFile();
             Uri cameraUri = FileUtils.fileToUri(this, mCameraFile, cameraIntent);
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraUri);
             startActivityForResult(cameraIntent, CameraActivity.OPEN_CAMERA_REQUEST_CODE);

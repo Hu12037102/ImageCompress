@@ -31,8 +31,9 @@ public class CompressPicker {
     /**
      * 压缩图片最大容量
      */
-    private static final int COMPRESS_SIZE = 150;
+    public static final int COMPRESS_SIZE = 150;
     private static final int BYTE_MONAD = 1024;
+    private static ImageConfig mImageConfig;
 
     /**
      * 压缩Bitmap
@@ -41,11 +42,11 @@ public class CompressPicker {
      * @return 返回Bitmap
      */
     public static Bitmap compressBitmap(ImageConfig imageConfig) {
-        LogUtils.w("bitmapToFile---", imageConfig + "--");
         Bitmap bitmap = null;
         if (null != imageConfig) {
+            CompressPicker.mImageConfig = imageConfig;
             BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            options.inPreferredConfig = imageConfig.config;
             options.inJustDecodeBounds = true;
             BitmapFactory.decodeFile(imageConfig.imagePath, options);
             options.inSampleSize = (int) ((options.outWidth * 1.0f) / (imageConfig.compressWidth * 1.0f) + (options.outHeight * 1.0f) / (imageConfig.compressHeight * 1.0f)) / 2;
@@ -84,23 +85,25 @@ public class CompressPicker {
     /**
      * Bitmap to File
      *
-     * @param context 上下文
-     * @param bitmap  bitmap
+     * @param bitmap bitmap
      * @return file
      */
-    public static File bitmapToFile(@NonNull Context context, @NonNull Bitmap bitmap) {
-        LogUtils.w("bitmapToFile--", bitmap + "--" + context);
+    public static File bitmapToFile(@NonNull Bitmap bitmap) {
+        if (mImageConfig == null) {
+            mImageConfig = new ImageConfig();
+        }
         FileOutputStream fos = null;
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         int quality = 100;
-        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, bos);
-        while (bos.toByteArray().length / CompressPicker.BYTE_MONAD > CompressPicker.COMPRESS_SIZE) {
+        bitmap.compress(mImageConfig.format, quality, bos);
+        while (bos.toByteArray().length / CompressPicker.BYTE_MONAD > mImageConfig.compressSize) {
             bos.reset();
             quality -= 5;
             bitmap.compress(Bitmap.CompressFormat.JPEG, quality, bos);
         }
-        File file = FileUtils.outFileDirectory(context);
-        File imageFile = new File(file.getAbsoluteFile(), "/hxb_" + System.currentTimeMillis()+".jpg");
+        File file = new File(mImageConfig.cachePathDirectory);
+        file = FileUtils.outFileDirectory(file.getAbsolutePath());
+        File imageFile = new File(file.getAbsoluteFile(), mImageConfig.imageName);
         try {
             fos = new FileOutputStream(imageFile);
             fos.write(bos.toByteArray(), 0, bos.toByteArray().length);

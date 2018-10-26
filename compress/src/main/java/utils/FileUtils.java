@@ -43,12 +43,12 @@ public class FileUtils {
     private static final int EOF = -1;
     private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
     private static final double ONE_KB = 1024;
-    private static final String FILE_DIRECTOR_NAME = "HuXiaobai/cache";
+    public static final String FILE_DIRECTOR_NAME = "HuXiaobai/cache";
     private static final String FILE_DIRECTOR_HEAD_NAME = "HuXiaobai";
 
-    public static File outFileDirectory(@NonNull Context context) {
+    public static File outFileDirectory() {
         String storageState = Environment.getExternalStorageState();
-        File rootFile = storageState.equals(Environment.MEDIA_MOUNTED) ? Environment.getExternalStorageDirectory() : context.getCacheDir();
+        File rootFile = storageState.equals(Environment.MEDIA_MOUNTED) ? Environment.getExternalStorageDirectory() : UiUtils.getContext().getCacheDir();
         rootFile = new File(rootFile.getAbsolutePath(), FILE_DIRECTOR_NAME);
         if (!rootFile.exists() || !rootFile.isDirectory()) {
             rootFile.mkdirs();
@@ -56,8 +56,19 @@ public class FileUtils {
         return rootFile;
     }
 
-    public static File resultImageFile(Context context) {
-        return new File(outFileDirectory(context).getAbsolutePath(), "hxb" + System.currentTimeMillis() + ".jpg");
+    public static File outFileDirectory(String directorName) {
+        String storageState = Environment.getExternalStorageState();
+        File rootFile = storageState.equals(Environment.MEDIA_MOUNTED) ? Environment.getExternalStorageDirectory() : UiUtils.getContext().getCacheDir();
+        rootFile = new File(rootFile.getAbsolutePath(), directorName);
+        if (!rootFile.exists() || !rootFile.isDirectory()) {
+            rootFile.mkdirs();
+        }
+        return rootFile;
+    }
+
+
+    public static File resultImageFile() {
+        return new File(outFileDirectory().getAbsolutePath(), "hxb" + System.currentTimeMillis() + ".jpg");
     }
 
     public static File getFileDirectorHead(Context context) {
@@ -66,19 +77,6 @@ public class FileUtils {
         return new File(rootFile, FILE_DIRECTOR_HEAD_NAME);
     }
 
-    private static File createFileDirectory(String path) {
-        File file = new File(path);
-        if (!file.exists() || !file.isDirectory()) {
-            file.mkdirs();
-        }
-        return file;
-    }
-
-    public static String IMAGE_HEAD_FORAT = "/HXB_" + System.currentTimeMillis() + ".jpg";
-
-    private boolean isImageFile(Context context, String path) {
-        return false;
-    }
 
     public static File from(Context context, Uri uri) throws IOException {
         InputStream inputStream = context.getContentResolver().openInputStream(uri);
@@ -193,7 +191,7 @@ public class FileUtils {
      *
      * @param file 文件或者文件夹
      */
-    public static void deleteAllFile(final  @NonNull File file) {
+    public static void deleteAllFile(final @NonNull File file) {
         Observable.create(new ObservableOnSubscribe<File>() {
             @Override
             public void subscribe(ObservableEmitter<File> e) throws Exception {
@@ -210,7 +208,7 @@ public class FileUtils {
                     }
                 }
                 e.onNext(file);
-                LogUtils.w("deleteAllFile--",Thread.currentThread().getName());
+                LogUtils.w("deleteAllFile--", Thread.currentThread().getName());
             }
         }).observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())

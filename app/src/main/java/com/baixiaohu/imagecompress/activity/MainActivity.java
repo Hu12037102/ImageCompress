@@ -10,6 +10,7 @@ import com.baixiaohu.imagecompress.base.BaseActivity;
 import com.baixiaohu.imagecompress.dialog.ExitDialog;
 import com.baixiaohu.imagecompress.permission.imp.OnPermissionsResult;
 import com.baixiaohu.imagecompress.toast.Toasts;
+import com.bumptech.glide.Glide;
 import com.squareup.haha.perflib.Main;
 
 import java.util.List;

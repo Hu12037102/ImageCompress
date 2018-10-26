@@ -1,13 +1,11 @@
 package com.baixiaohu.imagecompress.activity;
 
-import android.Manifest;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.SharedElementCallback;
-import android.support.v4.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,9 +16,6 @@ import com.baixiaohu.imagecompress.base.BaseActivity;
 
 import com.baixiaohu.imagecompress.R;
 import com.baixiaohu.imagecompress.bean.ImageFileBean;
-import com.baixiaohu.imagecompress.dialog.ExitDialog;
-import com.baixiaohu.imagecompress.permission.imp.OnPermissionsResult;
-import com.baixiaohu.imagecompress.toast.Toasts;
 import com.baixiaohu.imagecompress.utils.PairHelp;
 import com.bumptech.glide.Glide;
 
@@ -156,8 +151,8 @@ public class SingChoiceImageActivity extends BaseActivity {
             Toast.makeText(getApplicationContext(), "请先选择图片", Toast.LENGTH_SHORT).show();
         } else {
             if (FileUtils.isImageFile(mImageFile)) {
-                if (!CompressImageTask.getInstance().isCompressImage()) {
-                    CompressImageTask.getInstance().compressImage(SingChoiceImageActivity.this, new ImageConfig(mImageFile.getAbsolutePath()), new CompressImageTask.OnImageResult() {
+                if (!CompressImageTask.get().isCompressImage()) {
+                    CompressImageTask.get().compressImage(SingChoiceImageActivity.this, new ImageConfig(mImageFile.getAbsolutePath()), new CompressImageTask.OnImageResult() {
                         @Override
                         public void resultFileSucceed(File file) {
                             mCompressImageFile = file;
@@ -215,7 +210,7 @@ public class SingChoiceImageActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        CompressImageTask.getInstance().onRecycle();
+        CompressImageTask.get().onRecycle();
     }
 
 }

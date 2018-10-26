@@ -1,22 +1,14 @@
 package com.baixiaohu.imagecompress.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Matrix;
-import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.SharedElementCallback;
-import android.support.v4.util.Pair;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.baixiaohu.imagecompress.R;
 import com.baixiaohu.imagecompress.adapter.PictureAdapter;
@@ -31,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import utils.FileUtils;
 import utils.LogUtils;
@@ -108,7 +99,7 @@ public class MultipleChoiceImageActivity extends BaseActivity {
         mOriginalAdapter.setOnItemClickListener(new PictureAdapter.OnItemClickListener() {
             @Override
             public void onAddItemClick(View view, int position) {
-                if (!CompressImageTask.getInstance().isCompressImage()) {
+                if (!CompressImageTask.get().isCompressImage()) {
                     MultipleChoiceImageActivity.this.notifyOriginalAndCompressData();
                     openPhoto(false);
                 }else {
@@ -145,7 +136,7 @@ public class MultipleChoiceImageActivity extends BaseActivity {
                     Toasts.show("请先选择照片");
                     return;
                 }
-                if (CompressImageTask.getInstance().isCompressImage()){
+                if (CompressImageTask.get().isCompressImage()){
                     Toasts.show("正在压缩！请等待！");
                     return;
                 }
@@ -156,7 +147,7 @@ public class MultipleChoiceImageActivity extends BaseActivity {
                         data.add(imageConfig);
                     }
                 }
-                CompressImageTask.getInstance().compressImages(MultipleChoiceImageActivity.this, data, new CompressImageTask.OnImagesResult() {
+                CompressImageTask.get().compressImages(MultipleChoiceImageActivity.this, data, new CompressImageTask.OnImagesResult() {
                     @Override
                     public void resultFilesSucceed(List<File> fileList) {
                         if (mCompressPictureList.size() > 0) {

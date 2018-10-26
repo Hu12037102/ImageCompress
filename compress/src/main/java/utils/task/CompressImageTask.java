@@ -1,33 +1,25 @@
 package utils.task;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
+import com.trello.rxlifecycle2.components.RxActivity;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
-import io.reactivex.Scheduler;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
-import io.reactivex.internal.schedulers.ComputationScheduler;
 import io.reactivex.schedulers.Schedulers;
 import utils.CompressPicker;
 import utils.LogUtils;
-import utils.UiUtils;
 import utils.bean.ImageConfig;
 
 
@@ -55,10 +47,9 @@ public class CompressImageTask {
     private CompressImageTask() {
     }
 
-    @SuppressLint("StaticFieldLeak")
     private static CompressImageTask mTask = null;
 
-    public static CompressImageTask getInstance() {
+    public static CompressImageTask get() {
         synchronized (CompressImageTask.class) {
             if (mTask == null) {
                 synchronized (CompressImageTask.class) {
@@ -133,7 +124,7 @@ public class CompressImageTask {
             @Override
             public File apply(ImageConfig imageConfig) throws Exception {
                 Bitmap bitmap = CompressPicker.compressBitmap(imageConfig);
-                return CompressPicker.bitmapToFile(UiUtils.getContext(), bitmap);
+                return CompressPicker.bitmapToFile(bitmap);
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -183,9 +174,10 @@ public class CompressImageTask {
                    @Override
                    public File apply(ImageConfig imageConfig) throws Exception {
                        mIsCompressing = true;
-                       return CompressPicker.bitmapToFile(UiUtils.getContext(), CompressPicker.compressBitmap(imageConfig));
+                       return CompressPicker.bitmapToFile(CompressPicker.compressBitmap(imageConfig));
                    }
-               }).toList()
+               })
+                .toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleObserver<List<File>>() {
@@ -229,4 +221,5 @@ public class CompressImageTask {
 
         void resultBitmapError();
     }
+
 }

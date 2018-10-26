@@ -1,5 +1,13 @@
 package utils.bean;
 
+import android.graphics.Bitmap;
+
+import java.util.UUID;
+
+import utils.CompressPicker;
+import utils.FileUtils;
+import utils.task.CompressImageTask;
+
 /**
  * 项  目 :  ImageCompress
  * 包  名 :  com.baixiaohu.compress.utils.bean
@@ -9,7 +17,7 @@ package utils.bean;
  * 描  述 :  ${TODO} 图片处理bean类
  */
 
-public class ImageConfig{
+public class ImageConfig {
     /**
      * 压缩默认宽为720px
      */
@@ -25,7 +33,30 @@ public class ImageConfig{
         this.imagePath = imagePath;
     }
 
+    public ImageConfig() {
+    }
+
+    /**
+     * 图片格式
+     */
+    public Bitmap.CompressFormat format = Bitmap.CompressFormat.JPEG;
+
+    /**
+     * 图片质量
+     */
+    public Bitmap.Config config = Bitmap.Config.ARGB_8888;
 
 
+    /**
+     * 默认缓存的目录
+     */
+    public String cachePathDirectory = FileUtils.FILE_DIRECTOR_NAME;
+
+    /**
+     * 默认的缓存图片名字
+     */
+    public String imageName = "/hxb_" + String.valueOf(System.currentTimeMillis()) + UUID.randomUUID().toString().replaceAll("-", "").trim() + ".jpg";
+
+    public int compressSize = CompressPicker.COMPRESS_SIZE;
 
 }
