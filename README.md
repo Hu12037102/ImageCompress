@@ -30,7 +30,7 @@
  * @param imageConfig   bean
  * @param onImageResult file回调数据
  */
- CompressImageTask.getInstance().compressImage(SingChoiceImageActivity.this,new ImageConfig(mImageFile.getAbsolutePath()), new CompressImageTask.OnImageResult() {
+ CompressImageTask.get().compressImage(SingChoiceImageActivity.this,new ImageConfig(mImageFile.getAbsolutePath()), new CompressImageTask.OnImageResult() {
                         @Override
                         public void resultFileSucceed(File file) {
                              //成功回调
@@ -46,7 +46,7 @@
  * @param list  图片集合
  * @param onImagesResult  file集合回调数据
  */
- CompressImageTask.getInstance().compressImages(MultipleChoiceImageActivity.this, data, new CompressImageTask.OnImagesResult() {
+ CompressImageTask.get().compressImages(MultipleChoiceImageActivity.this, data, new CompressImageTask.OnImagesResult() {
                      @Override
                      public void resultFilesSucceed(List<File> fileList) {
                          //成功回调
@@ -63,7 +63,7 @@
  * @param imageConfig  bean
  * @param onBitmapResult  bitmap结果回调
  */ 
-  CompressImageTask.getInstance(this)
+  CompressImageTask.get(this)
   .compressBitmap(new ImageConfig(mImageFile.getAbsolutePath()), new CompressImageTask.OnBitmapResult() {
            @Override
            public void resultBitmapSucceed(Bitmap bitmap) {//结果成功回调
@@ -75,24 +75,50 @@
 
            }
        });
-       //关于bean类，默认压缩的高宽为1280*720
+
        public class ImageConfig {
-    /**
-     * 压缩默认宽为720px
-     */
-    public int compressWidth = 720;
-    /**
-     * 压缩默认长为1280px
-     */
-    public int compressHeight = 1280;
-    public String imagePath;
+           /**
+            * 压缩默认宽为720px
+            */
+           public int compressWidth = 720;
+           /**
+            * 压缩默认长为1280px
+            */
+           public int compressHeight = 1280;
+           public String imagePath;
 
 
-    public ImageConfig(String imagePath) {
-        this.imagePath = imagePath;
-    }
+           public ImageConfig(String imagePath) {
+               this.imagePath = imagePath;
+           }
+
+           public ImageConfig() {
+           }
+
+           /**
+            * 图片格式
+            */
+           public Bitmap.CompressFormat format = Bitmap.CompressFormat.JPEG;
+
+           /**
+            * 图片质量
+            */
+           public Bitmap.Config config = Bitmap.Config.ARGB_8888;
 
 
+           /**
+            * 默认缓存的目录
+            */
+           public String cachePathDirectory = FileUtils.FILE_DIRECTOR_NAME;
+
+           /**
+            * 默认的缓存图片名字
+            */
+           public String imageName = "/hxb_" + String.valueOf(System.currentTimeMillis()) + UUID.randomUUID().toString().replaceAll("-", "").trim() + ".jpg";
+
+           public int compressSize = CompressPicker.COMPRESS_SIZE;
+
+       }
 }
 ```
 #### 联系方式
