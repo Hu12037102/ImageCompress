@@ -62,9 +62,9 @@
  *压缩生成bitmap
  * @param imageConfig  bean
  * @param onBitmapResult  bitmap结果回调
- */ 
-  CompressImageTask.get(this)
-  .compressBitmap(new ImageConfig(mImageFile.getAbsolutePath()), new CompressImageTask.OnBitmapResult() {
+ */
+  CompressImageTask.get()
+  .compressBitmap(MultipleChoiceImageActivity.this,new ImageConfig(mImageFile.getAbsolutePath()), new CompressImageTask.OnBitmapResult() {
            @Override
            public void resultBitmapSucceed(Bitmap bitmap) {//结果成功回调
 
