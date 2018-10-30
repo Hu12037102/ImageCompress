@@ -21,7 +21,7 @@
 	</br>}
   </br>
   dependencies {
-	      </br> implementation 'com.github.Hu12037102.ImageCompress:compress:2.0.7'
+	      </br> implementation 'com.github.Hu12037102.ImageCompress:compress:2.0.8'
 	</br>}
 	
 ```java
@@ -31,6 +31,10 @@
  * @param onImageResult file回调数据
  */
  CompressImageTask.get().compressImage(SingChoiceImageActivity.this,new ImageConfig(mImageFile.getAbsolutePath()), new CompressImageTask.OnImageResult() {
+                        @Override
+                         public void startCompress() {
+                               //压缩前可以选择加载LoadingView
+                         }
                         @Override
                         public void resultFileSucceed(File file) {
                              //成功回调
@@ -47,6 +51,10 @@
  * @param onImagesResult  file集合回调数据
  */
  CompressImageTask.get().compressImages(MultipleChoiceImageActivity.this, data, new CompressImageTask.OnImagesResult() {
+                    @Override
+                     public void startCompress() {
+                                 //压缩前可以选择加载LoadingView
+                           }
                      @Override
                      public void resultFilesSucceed(List<File> fileList) {
                          //成功回调
@@ -65,6 +73,10 @@
  */
   CompressImageTask.get()
   .compressBitmap(MultipleChoiceImageActivity.this,new ImageConfig(mImageFile.getAbsolutePath()), new CompressImageTask.OnBitmapResult() {
+             @Override
+              public void startCompress() {
+               //压缩前可以选择加载LoadingView
+              }
            @Override
            public void resultBitmapSucceed(Bitmap bitmap) {//结果成功回调
 
