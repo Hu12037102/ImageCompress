@@ -21,7 +21,7 @@
 	</br>}
   </br>
   dependencies {
-	      </br> implementation 'com.github.Hu12037102.ImageCompress:compress:2.0.8'
+	      </br> implementation 'com.github.Hu12037102.ImageCompress:compress:2.0.9'
 	</br>}
 	
 ```java
@@ -134,9 +134,6 @@
                /**
                 * 调用默认压缩的图片配置属性
                 */
-
-               public int compressSize = CompressPicker.COMPRESS_SIZE;
-
                    public static ImageConfig getDefaultConfig(String filePath){
                        return new ImageConfig(filePath);
                    }
