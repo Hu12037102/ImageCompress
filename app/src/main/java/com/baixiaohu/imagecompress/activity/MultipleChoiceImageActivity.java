@@ -149,6 +149,11 @@ public class MultipleChoiceImageActivity extends BaseActivity {
                 }
                 CompressImageTask.get().compressImages(MultipleChoiceImageActivity.this, data, new CompressImageTask.OnImagesResult() {
                     @Override
+                    public void startCompress() {
+
+                    }
+
+                    @Override
                     public void resultFilesSucceed(List<File> fileList) {
                         if (mCompressPictureList.size() > 0) {
                             mCompressPictureList.clear();

@@ -2,6 +2,7 @@ package utils.task;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.trello.rxlifecycle2.components.RxActivity;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
@@ -36,10 +37,12 @@ import utils.bean.ImageConfig;
 
 public class CompressImageTask {
     private boolean mIsCompressing;
-    public boolean isCompressImage(){
+
+    public boolean isCompressImage() {
         return mIsCompressing;
     }
-    public void onRecycle(){
+
+    public void onRecycle() {
       /*  mActivity = null;
         mTask = null;*/
     }
@@ -66,7 +69,8 @@ public class CompressImageTask {
      * @param imageConfig    bean
      * @param onBitmapResult 结果回调
      */
-    public void compressBitmap(@NonNull RxAppCompatActivity activity,@NonNull final ImageConfig imageConfig, final  @NonNull OnBitmapResult onBitmapResult) {
+    public void compressBitmap(@NonNull RxAppCompatActivity activity, @NonNull final ImageConfig imageConfig, final @NonNull OnBitmapResult onBitmapResult) {
+        onBitmapResult.startCompress();
         Observable.create(new ObservableOnSubscribe<ImageConfig>() {
             @Override
             public void subscribe(ObservableEmitter<ImageConfig> e) throws Exception {
@@ -74,11 +78,11 @@ public class CompressImageTask {
             }
         }).compose(activity.<ImageConfig>bindToLifecycle())
                 .map(new Function<ImageConfig, Bitmap>() {
-            @Override
-            public Bitmap apply(ImageConfig imageConfig) throws Exception {
-                return CompressPicker.compressBitmap(imageConfig);
-            }
-        }).observeOn(AndroidSchedulers.mainThread())
+                    @Override
+                    public Bitmap apply(ImageConfig imageConfig) throws Exception {
+                        return CompressPicker.compressBitmap(imageConfig);
+                    }
+                }).observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Observer<Bitmap>() {
                     @Override
@@ -88,11 +92,11 @@ public class CompressImageTask {
 
                     @Override
                     public void onNext(Bitmap bitmap) {
-                            if (bitmap != null && bitmap.getHeight() > 0 && bitmap.getWidth() > 0) {
-                                onBitmapResult.resultBitmapSucceed(bitmap);
-                            } else {
-                                onBitmapResult.resultBitmapError();
-                            }
+                        if (bitmap != null && bitmap.getHeight() > 0 && bitmap.getWidth() > 0) {
+                            onBitmapResult.resultBitmapSucceed(bitmap);
+                        } else {
+                            onBitmapResult.resultBitmapError();
+                        }
                     }
 
                     @Override
@@ -112,7 +116,9 @@ public class CompressImageTask {
      * @param imageConfig   bean
      * @param onImageResult 回调数据
      */
-    public void compressImage(@NonNull RxAppCompatActivity activity,@NonNull final ImageConfig imageConfig,final  @NonNull OnImageResult onImageResult) {
+    public void compressImage(@NonNull RxAppCompatActivity activity, @NonNull final ImageConfig imageConfig, final @NonNull OnImageResult onImageResult) {
+        Log.w("subscribe---", Thread.currentThread().getName());
+        onImageResult.startCompress();
         Observable.create(new ObservableOnSubscribe<ImageConfig>() {
             @Override
             public void subscribe(ObservableEmitter<ImageConfig> e) throws Exception {
@@ -121,39 +127,40 @@ public class CompressImageTask {
             }
         }).compose(activity.<ImageConfig>bindToLifecycle())
                 .map(new Function<ImageConfig, File>() {
-            @Override
-            public File apply(ImageConfig imageConfig) throws Exception {
-                Bitmap bitmap = CompressPicker.compressBitmap(imageConfig);
-                return CompressPicker.bitmapToFile(bitmap);
-            }
-        }).subscribeOn(Schedulers.io())
+                    @Override
+                    public File apply(ImageConfig imageConfig) throws Exception {
+                        Bitmap bitmap = CompressPicker.compressBitmap(imageConfig);
+                        return CompressPicker.bitmapToFile(bitmap);
+                    }
+                }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<File>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        LogUtils.w("compressImage--","onSubscribe");
+
+                        LogUtils.w("compressImage--", "onSubscribe");
                     }
 
                     @Override
                     public void onNext(File file) {
-                        LogUtils.w("compressImage--","onNext");
+                        LogUtils.w("compressImage--", "onNext");
                         mIsCompressing = false;
-                            if (file != null) {
-                                onImageResult.resultFileSucceed(file);
-                            } else {
-                                onImageResult.resultFileError();
-                            }
+                        if (file != null) {
+                            onImageResult.resultFileSucceed(file);
+                        } else {
+                            onImageResult.resultFileError();
+                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        LogUtils.w("compressImage--","onError");
+                        LogUtils.w("compressImage--", "onError");
                     }
 
                     @Override
                     public void onComplete() {
                         mIsCompressing = false;
-                        LogUtils.w("compressImage--","onComplete");
+                        LogUtils.w("compressImage--", "onComplete");
                     }
                 });
     }
@@ -165,58 +172,65 @@ public class CompressImageTask {
      * @param list              集合
      * @param onImageListResult 结果回调
      */
-    public void compressImages(@NonNull RxAppCompatActivity activity,@NonNull final List<ImageConfig> list, final @NonNull OnImagesResult onImageListResult) {
+    public void compressImages(@NonNull RxAppCompatActivity activity, @NonNull final List<ImageConfig> list, final @NonNull OnImagesResult onImageListResult) {
         if (list.size() == 0) {
             return;
         }
+        onImageListResult.startCompress();
         Observable.fromIterable(list).compose(activity.<ImageConfig>bindToLifecycle())
-               .map(new Function<ImageConfig, File>() {
-                   @Override
-                   public File apply(ImageConfig imageConfig) throws Exception {
-                       mIsCompressing = true;
-                       return CompressPicker.bitmapToFile(CompressPicker.compressBitmap(imageConfig));
-                   }
-               })
+                .map(new Function<ImageConfig, File>() {
+                    @Override
+                    public File apply(ImageConfig imageConfig) throws Exception {
+                        mIsCompressing = true;
+                        return CompressPicker.bitmapToFile(CompressPicker.compressBitmap(imageConfig));
+                    }
+                })
                 .toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleObserver<List<File>>() {
-            @Override
-            public void onSubscribe(Disposable d) {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-            }
+                    }
 
-            @Override
-            public void onSuccess(List<File> files) {
-                mIsCompressing = false;
-                if (files.size() > 0) {
-                    onImageListResult.resultFilesSucceed(files);
-                } else {
-                    onImageListResult.resultFilesError();
-                }
-            }
+                    @Override
+                    public void onSuccess(List<File> files) {
+                        mIsCompressing = false;
+                        if (files.size() > 0) {
+                            onImageListResult.resultFilesSucceed(files);
+                        } else {
+                            onImageListResult.resultFilesError();
+                        }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
 
-            }
-        });
+                    }
+                });
     }
 
 
     public interface OnImagesResult {
+        void startCompress();
+
         void resultFilesSucceed(List<File> fileList);
 
         void resultFilesError();
     }
 
     public interface OnImageResult {
+        void startCompress();
+
         void resultFileSucceed(File file);
 
         void resultFileError();
     }
 
     public interface OnBitmapResult {
+        void startCompress();
+
         void resultBitmapSucceed(Bitmap bitmap);
 
         void resultBitmapError();

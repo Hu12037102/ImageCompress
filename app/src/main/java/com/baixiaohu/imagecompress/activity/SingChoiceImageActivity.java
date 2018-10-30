@@ -154,6 +154,11 @@ public class SingChoiceImageActivity extends BaseActivity {
                 if (!CompressImageTask.get().isCompressImage()) {
                     CompressImageTask.get().compressImage(SingChoiceImageActivity.this, new ImageConfig(mImageFile.getAbsolutePath()), new CompressImageTask.OnImageResult() {
                         @Override
+                        public void startCompress() {
+
+                        }
+
+                        @Override
                         public void resultFileSucceed(File file) {
                             mCompressImageFile = file;
                             mFilePathData.add(file.getAbsolutePath());
