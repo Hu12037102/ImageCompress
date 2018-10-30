@@ -57,6 +57,10 @@ public class ImageConfig {
      */
     public String imageName = "/hxb_" + String.valueOf(System.currentTimeMillis()) + UUID.randomUUID().toString().replaceAll("-", "").trim() + ".jpg";
 
+    /**
+     * 调用默认压缩的图片配置属性
+     */
+
     public int compressSize = CompressPicker.COMPRESS_SIZE;
 
         public static ImageConfig getDefaultConfig(String filePath){

@@ -30,7 +30,7 @@
  * @param imageConfig   bean
  * @param onImageResult file回调数据
  */
- CompressImageTask.get().compressImage(SingChoiceImageActivity.this,new ImageConfig(mImageFile.getAbsolutePath()), new CompressImageTask.OnImageResult() {
+ CompressImageTask.get().compressImage(SingChoiceImageActivity.this,ImageConfig.getDefaultConfig(mImageFile.getAbsolutePath()), new CompressImageTask.OnImageResult() {
                         @Override
                          public void startCompress() {
                                //压缩前可以选择加载LoadingView
@@ -72,7 +72,7 @@
  * @param onBitmapResult  bitmap结果回调
  */
   CompressImageTask.get()
-  .compressBitmap(MultipleChoiceImageActivity.this,new ImageConfig(mImageFile.getAbsolutePath()), new CompressImageTask.OnBitmapResult() {
+  .compressBitmap(MultipleChoiceImageActivity.this,ImageConfig.getDefaultConfig(mImageFile.getAbsolutePath()), new CompressImageTask.OnBitmapResult() {
              @Override
               public void startCompress() {
                //压缩前可以选择加载LoadingView
@@ -129,6 +129,17 @@
            public String imageName = "/hxb_" + String.valueOf(System.currentTimeMillis()) + UUID.randomUUID().toString().replaceAll("-", "").trim() + ".jpg";
 
            public int compressSize = CompressPicker.COMPRESS_SIZE;
+
+
+               /**
+                * 调用默认压缩的图片配置属性
+                */
+
+               public int compressSize = CompressPicker.COMPRESS_SIZE;
+
+                   public static ImageConfig getDefaultConfig(String filePath){
+                       return new ImageConfig(filePath);
+                   }
 
        }
 }
