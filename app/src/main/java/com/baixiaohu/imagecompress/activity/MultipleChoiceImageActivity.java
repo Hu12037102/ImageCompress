@@ -58,16 +58,15 @@ public class MultipleChoiceImageActivity extends BaseActivity {
             @Override
             public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
                 super.onMapSharedElements(names, sharedElements);
-                LogUtils.w("initView--",PairHelp.PREVIEW_POSITION+"");
-                switch (mPreviewStatus){
+                LogUtils.w("initView--", PairHelp.PREVIEW_POSITION + "");
+                switch (mPreviewStatus) {
                     case 0:
-                        sharedElements.put(PairHelp.transitionName(),mRlOriginal.findViewHolderForAdapterPosition(PairHelp.PREVIEW_POSITION).itemView);
+                        sharedElements.put(PairHelp.transitionName(), mRlOriginal.findViewHolderForAdapterPosition(PairHelp.PREVIEW_POSITION).itemView);
                         break;
                     case 1:
-                        sharedElements.put(PairHelp.transitionName(),mRlCompress.findViewHolderForAdapterPosition(PairHelp.PREVIEW_POSITION).itemView);
+                        sharedElements.put(PairHelp.transitionName(), mRlCompress.findViewHolderForAdapterPosition(PairHelp.PREVIEW_POSITION).itemView);
                         break;
                 }
-
 
 
             }
@@ -102,7 +101,7 @@ public class MultipleChoiceImageActivity extends BaseActivity {
                 if (!CompressImageTask.get().isCompressImage()) {
                     MultipleChoiceImageActivity.this.notifyOriginalAndCompressData();
                     openPhoto(false);
-                }else {
+                } else {
                     Toasts.show("正在压缩！请等待！");
                 }
             }
@@ -128,7 +127,6 @@ public class MultipleChoiceImageActivity extends BaseActivity {
         });
 
 
-
         mBtnCompress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,14 +134,14 @@ public class MultipleChoiceImageActivity extends BaseActivity {
                     Toasts.show("请先选择照片");
                     return;
                 }
-                if (CompressImageTask.get().isCompressImage()){
+                if (CompressImageTask.get().isCompressImage()) {
                     Toasts.show("正在压缩！请等待！");
                     return;
                 }
                 List<ImageConfig> data = new ArrayList<>();
                 for (ImageFileBean imageFileBean : mOriginalPictureList) {
                     if (imageFileBean.isImage) {
-                        ImageConfig imageConfig = new ImageConfig(imageFileBean.imageFile.getAbsolutePath());
+                        ImageConfig imageConfig = ImageConfig.getDefaultConfig(imageFileBean.imageFile.getAbsolutePath());
                         data.add(imageConfig);
                     }
                 }
@@ -189,7 +187,7 @@ public class MultipleChoiceImageActivity extends BaseActivity {
         intent.putExtra(Contast.CLICK_IMAGE_POSITION_KEY, position);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             PairHelp.setPerviewPostion(position);
-            LogUtils.w("initView-",PairHelp.PREVIEW_POSITION+"");
+            LogUtils.w("initView-", PairHelp.PREVIEW_POSITION + "");
             Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(MultipleChoiceImageActivity.this
                     , PairHelp.addPair(view)).toBundle();
             startActivity(intent, bundle);
@@ -197,7 +195,6 @@ public class MultipleChoiceImageActivity extends BaseActivity {
             startActivity(intent);
         }
     }
-
 
 
     @Override

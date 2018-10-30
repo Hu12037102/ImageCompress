@@ -29,7 +29,7 @@ public class ImageConfig {
     public String imagePath;
 
 
-    public ImageConfig(String imagePath) {
+    private ImageConfig(String imagePath) {
         this.imagePath = imagePath;
     }
 
@@ -58,5 +58,9 @@ public class ImageConfig {
     public String imageName = "/hxb_" + String.valueOf(System.currentTimeMillis()) + UUID.randomUUID().toString().replaceAll("-", "").trim() + ".jpg";
 
     public int compressSize = CompressPicker.COMPRESS_SIZE;
+
+        public static ImageConfig getDefaultConfig(String filePath){
+            return new ImageConfig(filePath);
+        }
 
 }
