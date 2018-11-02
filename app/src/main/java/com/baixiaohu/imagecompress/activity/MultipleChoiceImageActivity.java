@@ -39,8 +39,9 @@ public class MultipleChoiceImageActivity extends BaseActivity {
     private PictureAdapter mOriginalAdapter;
     private List<ImageFileBean> mCompressPictureList;
     private PictureAdapter mCompressAdapter;
-    List<String> mPreviewData;
+    List<String> mPreviewOriginalData;
     private int mPreviewStatus;//0、代表原图预览；1、代表也缩图预览
+    private List<String> mPreviewCompressData;
 
     @Override
     protected int getLayoutId() {
@@ -77,7 +78,9 @@ public class MultipleChoiceImageActivity extends BaseActivity {
     protected void initData() {
 
 
-        mPreviewData = new ArrayList<>();
+        mPreviewOriginalData = new ArrayList<>();
+        mPreviewCompressData = new ArrayList<>();
+
 
         mOriginalPictureList = new ArrayList<>();
         mOriginalPictureList.add(new ImageFileBean());
@@ -109,7 +112,7 @@ public class MultipleChoiceImageActivity extends BaseActivity {
             @Override
             public void onPictureItemClick(View view, int position) {
                 mPreviewStatus = 0;
-                toPreviewActivity(view, position);
+                toPreviewActivity(view, position,mPreviewOriginalData);
             }
         });
 
@@ -122,7 +125,7 @@ public class MultipleChoiceImageActivity extends BaseActivity {
             @Override
             public void onPictureItemClick(View view, int position) {
                 mPreviewStatus = 1;
-                toPreviewActivity(view, position);
+                toPreviewActivity(view, position,mPreviewCompressData);
             }
         });
 
@@ -158,14 +161,14 @@ public class MultipleChoiceImageActivity extends BaseActivity {
                             mCompressAdapter.notifyDataSetChanged();
                         }
                         if (fileList != null && fileList.size() > 0) {
-                            mPreviewData.clear();
+                            mPreviewCompressData.clear();
                             for (File file : fileList) {
                                 ImageFileBean imageFileBean = new ImageFileBean();
                                 imageFileBean.imageFile = file;
                                 imageFileBean.imageSize = FileUtils.imageSize(file.length());
                                 imageFileBean.isImage = true;
                                 mCompressPictureList.add(imageFileBean);
-                                mPreviewData.add(file.getAbsolutePath());
+                                mPreviewCompressData.add(file.getAbsolutePath());
                             }
                             mCompressAdapter.notifyDataSetChanged();
 
@@ -181,13 +184,13 @@ public class MultipleChoiceImageActivity extends BaseActivity {
         });
     }
 
-    private void toPreviewActivity(View view, int position) {
+    private void toPreviewActivity(View view, int position,List<String> list) {
         Intent intent = new Intent(MultipleChoiceImageActivity.this, PreviewImageActivity.class);
-        intent.putStringArrayListExtra(Contast.IMAGE_PATH_KEY, (ArrayList<String>) mPreviewData);
+        intent.putStringArrayListExtra(Contast.IMAGE_PATH_KEY, (ArrayList<String>) list);
         intent.putExtra(Contast.CLICK_IMAGE_POSITION_KEY, position);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             PairHelp.setPerviewPostion(position);
-            LogUtils.w("initView-", PairHelp.PREVIEW_POSITION + "");
+            LogUtils.w("initView-", PairHelp.PREVIEW_POSITION + "---"+ mPreviewOriginalData.size());
             Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(MultipleChoiceImageActivity.this
                     , PairHelp.addPair(view)).toBundle();
             startActivity(intent, bundle);
@@ -202,9 +205,9 @@ public class MultipleChoiceImageActivity extends BaseActivity {
         super.imageFilesResult(data);
         mOriginalPictureList.addAll(0, data);
         mOriginalAdapter.notifyDataSetChanged();
-        mPreviewData.clear();
+        mPreviewOriginalData.clear();
         for (ImageFileBean imageFileBean : data) {
-            mPreviewData.add(imageFileBean.imageFile.getAbsolutePath());
+            mPreviewOriginalData.add(imageFileBean.imageFile.getAbsolutePath());
         }
     }
 

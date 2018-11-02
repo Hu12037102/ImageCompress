@@ -5,7 +5,7 @@ ext {
             targetSdkVersion : 27,
             versionCode      : 1,
             versionName      : "1.0",
-            buildToolsVersion: "26.0.3"
+            buildToolsVersion: "27.0.3"
     ]
 
     dependVersion = [
