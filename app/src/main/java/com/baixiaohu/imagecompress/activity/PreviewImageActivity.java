@@ -1,14 +1,8 @@
 package com.baixiaohu.imagecompress.activity;
 
-import android.app.SharedElementCallback;
 import android.content.Intent;
 import android.os.Build;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
-import android.transition.Fade;
-import android.transition.Transition;
-import android.util.Log;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -20,10 +14,6 @@ import com.baixiaohu.imagecompress.utils.PairHelp;
 import com.baixiaohu.imagecompress.weight.PreviewPager;
 
 import java.util.List;
-import java.util.Map;
-
-import utils.LogUtils;
-import utils.task.ActivityPicker;
 
 /**
  * 项  目 :  ImageCompress
@@ -86,7 +76,7 @@ public class PreviewImageActivity extends BaseActivity {
 
                         @Override
                         public void onPageSelected(int position) {
-                            PairHelp.setPerviewPostion(mViewPager.getCurrentItem());
+                            PairHelp.setPreviewPosition(mViewPager.getCurrentItem());
                         }
 
                         @Override

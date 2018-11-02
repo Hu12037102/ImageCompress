@@ -119,14 +119,14 @@ public class SingChoiceImageActivity extends BaseActivity {
     }
 
     private void clickCompressImage(View view) {
-        PairHelp.setPerviewPostion(1);
+        PairHelp.setPreviewPosition(1);
         toPreviewActivity(view, mCompressImageView, mCompressImageFile);
     }
 
 
 
     private void clickRawImage(View view) {
-        PairHelp.setPerviewPostion(0);
+        PairHelp.setPreviewPosition(0);
         toPreviewActivity(view, mImageView, mImageFile);
     }
 

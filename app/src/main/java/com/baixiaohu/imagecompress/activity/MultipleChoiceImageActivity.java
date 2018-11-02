@@ -189,9 +189,9 @@ public class MultipleChoiceImageActivity extends BaseActivity {
         intent.putStringArrayListExtra(Contast.IMAGE_PATH_KEY, (ArrayList<String>) list);
         intent.putExtra(Contast.CLICK_IMAGE_POSITION_KEY, position);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            PairHelp.setPerviewPostion(position);
+            PairHelp.setPreviewPosition(position);
             LogUtils.w("initView-", PairHelp.PREVIEW_POSITION + "---"+ mPreviewOriginalData.size());
-            Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(MultipleChoiceImageActivity.this
+            Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(this
                     , PairHelp.addPair(view)).toBundle();
             startActivity(intent, bundle);
         } else {

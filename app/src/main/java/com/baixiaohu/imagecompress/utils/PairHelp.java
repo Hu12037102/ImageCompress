@@ -11,7 +11,7 @@ public class PairHelp {
     private static final String PREVIEW_KEY = "preview_image";
     public static int PREVIEW_POSITION ;
 
-    public static void setPerviewPostion(int position){
+    public static void setPreviewPosition(int position){
         PREVIEW_POSITION = position;
     }
     public static Pair<View, String> addPair(@NonNull View view) {
@@ -20,7 +20,6 @@ public class PairHelp {
     }
 
     public static String transitionName() {
-        LogUtils.w("PairHelp--",PairHelp.PREVIEW_KEY);
         return PairHelp.PREVIEW_KEY;
     }
 
