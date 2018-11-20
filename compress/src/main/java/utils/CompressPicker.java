@@ -57,7 +57,6 @@ public class CompressPicker {
                             decoder.setTargetSize(imageConfig.compressWidth, imageConfig.compressHeight);
                             decoder.setTargetSampleSize(150*1024);
                             decoder.setMutableRequired(true);
-                            decoder.setMemorySizePolicy();
                             decoder.close();
                         }
                     });

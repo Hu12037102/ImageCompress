@@ -5,14 +5,14 @@ android {
         abortOnError false
     }
 
-  /*  signingConfigs {
+    signingConfigs {
         release {
             keyAlias 'key'
             keyPassword '123456'
             storeFile file('D:/AndroidWork/ImageCompress/key.jks')
             storePassword '123456'
         }
-    }*/
+    }
     defaultConfig {
         def versions = rootProject.ext.android
         compileSdkVersion versions.compileSdkVersion
@@ -23,10 +23,11 @@ android {
         versionName versions.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildToolsVersion versions.buildToolsVersion
+        resConfigs "zh"
     }
     buildTypes {
         release {
-          //  signingConfig signingConfigs.release
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("boolean", "IS_DEBUG", "false")
@@ -63,7 +64,6 @@ dependencies {
     implementation versions.glide
     implementation versions.design
     implementation project(':compress')
-    implementation files('libs/systembartint-1.0.4.jar')
     implementation versions.PhotoView
     implementation versions.multidex
     debugImplementation versions.leakcanaryAndroid
@@ -71,7 +71,7 @@ dependencies {
     debugImplementation versions.leakcanarySupportFragment
     implementation versions.supportV4
     implementation versions.rxlifecycleComponents
-    implementation project(':matisse')
+    implementation project(':media')
 }
 allprojects {
     repositories {
