@@ -1,10 +1,14 @@
 package utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.ImageDecoder;
 import android.graphics.Matrix;
+import android.graphics.drawable.AnimatedImageDrawable;
 import android.media.ExifInterface;
+import android.os.Build;
 import android.support.annotation.NonNull;
 
 
@@ -41,43 +45,65 @@ public class CompressPicker {
      * @param imageConfig bean
      * @return 返回Bitmap
      */
-    public static Bitmap compressBitmap(ImageConfig imageConfig) {
+    public static Bitmap compressBitmap(final ImageConfig imageConfig) {
         Bitmap bitmap = null;
         if (null != imageConfig) {
-            CompressPicker.mImageConfig = imageConfig;
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inPreferredConfig = imageConfig.config;
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(imageConfig.imagePath, options);
-            options.inSampleSize = (int) ((options.outWidth * 1.0f) / (imageConfig.compressWidth * 1.0f) + (options.outHeight * 1.0f) / (imageConfig.compressHeight * 1.0f)) / 2;
-            options.inJustDecodeBounds = false;
-            options.inScaled = false;
-            options.inMutable = true;
-            bitmap = BitmapFactory.decodeFile(imageConfig.imagePath, options);
-            ExifInterface exif;
-            try {
-                exif = new ExifInterface(imageConfig.imagePath);
-                int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 0);
-                Matrix matrix = new Matrix();
-                switch (orientation) {
-                    case ExifInterface.ORIENTATION_ROTATE_90:
-                        matrix.postRotate(90);
-                        break;
-                    case ExifInterface.ORIENTATION_ROTATE_180:
-                        matrix.postRotate(180);
-                        break;
-                    case ExifInterface.ORIENTATION_ROTATE_270:
-                        matrix.postRotate(270);
-                        break;
-                    default:
-                        break;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                ImageDecoder.Source source = ImageDecoder.createSource(new File(imageConfig.imagePath));
+                try {
+                    bitmap = ImageDecoder.decodeBitmap(source, new ImageDecoder.OnHeaderDecodedListener() {
+                        @Override
+                        public void onHeaderDecoded(ImageDecoder decoder, ImageDecoder.ImageInfo info, ImageDecoder.Source source) {
+                            decoder.setTargetSize(imageConfig.compressWidth, imageConfig.compressHeight);
+                            decoder.setTargetSampleSize(150*1024);
+                            decoder.setMutableRequired(true);
+                            decoder.setMemorySizePolicy();
+                            decoder.close();
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return bitmap;
-
+            } else {
+                CompressPicker.mImageConfig = imageConfig;
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = imageConfig.config;
+                options.inJustDecodeBounds = true;
+                BitmapFactory.decodeFile(imageConfig.imagePath, options);
+                options.inSampleSize = (int) ((options.outWidth * 1.0f) / (imageConfig.compressWidth * 1.0f) + (options.outHeight * 1.0f) / (imageConfig.compressHeight * 1.0f)) / 2;
+                options.inJustDecodeBounds = false;
+                options.inScaled = false;
+                options.inMutable = true;
+                bitmap = BitmapFactory.decodeFile(imageConfig.imagePath, options);
             }
+            if (bitmap != null) {
+                ExifInterface exif;
+                try {
+                    exif = new ExifInterface(imageConfig.imagePath);
+                    int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 0);
+                    Matrix matrix = new Matrix();
+                    switch (orientation) {
+                        case ExifInterface.ORIENTATION_ROTATE_90:
+                            matrix.postRotate(90);
+                            break;
+                        case ExifInterface.ORIENTATION_ROTATE_180:
+                            matrix.postRotate(180);
+                            break;
+                        case ExifInterface.ORIENTATION_ROTATE_270:
+                            matrix.postRotate(270);
+                            break;
+                        default:
+                            break;
+                    }
+                    bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return bitmap;
+
+                }
+            }
+
+
         }
         return bitmap;
     }
