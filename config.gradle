@@ -1,33 +1,36 @@
 ext {
     android = [
-            compileSdkVersion: 27,
+            compileSdkVersion: 28,
             minSdkVersion    : 15,
-            targetSdkVersion : 27,
+            targetSdkVersion : 28,
             versionCode      : 1,
             versionName      : "1.0",
-            buildToolsVersion: "27.0.3"
+            buildToolsVersion: "28.0.0"
     ]
 
     dependVersion = [
-            appcompat                : "27.1.1",
+            appcompat                : "28.0.0",
             constraint               : "1.0.2",
             junit                    : "4.12",
             runner                   : "1.0.1",
             espresso                 : "3.0.1",
             glide                    : "4.8.0",
-            design                   : "27.1.1",
+            design                   : "28.0.0",
             PhotoView                : "2.0.0",
             multidex                 : "1.0.3",
             leakcanaryAndroid        : "1.6.1",
             leakcanaryAndroidNoOp    : "1.6.1",
             leakcanarySupportFragment: "1.6.1",
-            supportV4                : "27.1.1",
+            supportV4                : "28.0.0",
             rxjava                   : "2.0.0",
             rxandroid                : "2.0.0",
             rxlifecycleComponents    : "2.1.0",
-            recyclerview             : "27.0.0",
+            recyclerview             : "28.0.0",
             imagezoom                : "1.0.4",
-            picasso                  : "2.5.2"
+            picasso                  : "2.5.2",
+            projectview              : "1.0.1",
+            eventbus                 : "3.1.1",
+            ucrop                    : "2.2.2"
 
     ]
 
@@ -50,7 +53,10 @@ ext {
             rxlifecycleComponents    : "com.trello.rxlifecycle2:rxlifecycle-components:${dependVersion.rxlifecycleComponents}",
             recyclerview             : "com.android.support:recyclerview-v7:${dependVersion.recyclerview}",
             imagezoom                : "it.sephiroth.android.library.imagezoom:library:${dependVersion.imagezoom}",
-            picasso                  : "com.squareup.picasso:picasso:${dependVersion.picasso}"
+            picasso                  : "com.squareup.picasso:picasso:${dependVersion.picasso}",
+            projectview              : "com.github.Hu12037102:ProjectView:${dependVersion.projectview}",
+            eventbus                 : "org.greenrobot:eventbus:${dependVersion.eventbus}",
+            ucrop                    : "com.github.yalantis:ucrop:${dependVersion.ucrop}"
             // rxlifecycleComponents:"com.trello.rxlifecycle2:rxlifecycle-android:${dependVersion.rxlifecycleComponents}"
             //implementation 'com.trello.rxlifecycle2:rxlifecycle-android:2.2.2'
 
