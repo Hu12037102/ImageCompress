@@ -16,4 +16,10 @@
 #   public *;
 #}
 
--dontwarn com.squareup.okhttp.**
+#-dontwarn com.squareup.okhttp.**
+#-dontwarn com.squareup.okhttp3.**
+#-keep class com.squareup.okhttp3.** { *;}
+#-dontwarn okio.**
+#-dontwarn okio.**
+#-dontwarn javax.annotation.Nullable
+#-dontwarn javax.annotation.ParametersAreNonnullByDefault

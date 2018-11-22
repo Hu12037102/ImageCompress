@@ -46,12 +46,12 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildToolsVersion versions.buildToolsVersion
     }
-    buildTypes {
+   /* buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-    }
+    }*/
 }
 
 

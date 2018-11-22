@@ -5,14 +5,23 @@ android {
         abortOnError false
     }
 
-  /*  signingConfigs {
+
+    aaptOptions {
+                 cruncherEnabled = false
+                 useNewCruncher = false
+
+        }
+
+
+
+        signingConfigs {
         release {
             keyAlias 'key'
             keyPassword '123456'
             storeFile file('D:/AndroidWork/ImageCompress/key.jks')
             storePassword '123456'
         }
-    }*/
+    }
     defaultConfig {
         def versions = rootProject.ext.android
         compileSdkVersion versions.compileSdkVersion
@@ -23,30 +32,32 @@ android {
         versionName versions.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildToolsVersion versions.buildToolsVersion
+        resConfigs "zh"
     }
     buildTypes {
         release {
-          //  signingConfig signingConfigs.release
-            minifyEnabled false
+            signingConfig signingConfigs.release
+            //是否清理无用资源
+            shrinkResources true
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("boolean", "IS_DEBUG", "false")
-            //是否清理无用资源
-            //shrinkResources true
+
             //是否启用zipAlign压缩
             zipAlignEnabled true
             pseudoLocalesEnabled true
         }
-        /* debug{
-            // signingConfig signingConfigs.release
-             minifyEnabled false
+         debug{
+             signingConfig signingConfigs.release
+             //是否清理无用资源
+             shrinkResources false
+             minifyEnabled true
              proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
              buildConfigField("boolean","IS_DEBUG","true")
-             //是否清理无用资源
-             shrinkResources true
              //是否启用zipAlign压缩
              zipAlignEnabled true
              pseudoLocalesEnabled true
-         }*/
+         }
     }
 }
 
