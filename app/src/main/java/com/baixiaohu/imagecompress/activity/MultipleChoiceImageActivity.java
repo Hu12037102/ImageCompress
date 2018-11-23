@@ -7,7 +7,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.baixiaohu.imagecompress.R;
@@ -148,10 +150,12 @@ public class MultipleChoiceImageActivity extends BaseActivity {
                         data.add(imageConfig);
                     }
                 }
+                final ViewGroup viewGroup = (ViewGroup) getWindow().getDecorView();
+                final View inflate = LayoutInflater.from(MultipleChoiceImageActivity.this).inflate(R.layout.item_loading_view, viewGroup, false);
                 CompressImageTask.get().compressImages(MultipleChoiceImageActivity.this, data, new CompressImageTask.OnImagesResult() {
                     @Override
                     public void startCompress() {
-
+                        viewGroup.addView(inflate);
                     }
 
                     @Override
@@ -173,11 +177,16 @@ public class MultipleChoiceImageActivity extends BaseActivity {
                             mCompressAdapter.notifyDataSetChanged();
 
                         }
+                        if (viewGroup.indexOfChild(inflate) != -1) {
+                            viewGroup.removeView(inflate);
+                        }
                     }
 
                     @Override
                     public void resultFilesError() {
-
+                        if (viewGroup.indexOfChild(inflate) != -1) {
+                            viewGroup.removeView(inflate);
+                        }
                     }
                 });
             }

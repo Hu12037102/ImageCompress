@@ -26,12 +26,12 @@ public class BaseApplication extends MultiDexApplication {
     }
 
     private void init() {
-        if (LeakCanary.isInAnalyzerProcess(this)) {
+      /*  if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.
             return;
         }
-        LeakCanary.install(this);
+        LeakCanary.install(this);*/
         Toasts.init(this);
         UiUtils.init(this);
 

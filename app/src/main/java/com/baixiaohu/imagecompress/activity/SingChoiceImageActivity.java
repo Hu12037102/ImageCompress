@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.SharedElementCallback;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -106,10 +108,10 @@ public class SingChoiceImageActivity extends BaseActivity {
                 super.onMapSharedElements(names, sharedElements);
                 switch (PairHelp.PREVIEW_POSITION) {
                     case 0:
-                        sharedElements.put(PairHelp.transitionName(),mImageView);
+                        sharedElements.put(PairHelp.transitionName(), mImageView);
                         break;
                     case 1:
-                        sharedElements.put(PairHelp.transitionName(),mCompressImageView);
+                        sharedElements.put(PairHelp.transitionName(), mCompressImageView);
                         break;
                 }
 
@@ -122,7 +124,6 @@ public class SingChoiceImageActivity extends BaseActivity {
         PairHelp.setPreviewPosition(1);
         toPreviewActivity(view, mCompressImageView, mCompressImageFile);
     }
-
 
 
     private void clickRawImage(View view) {
@@ -152,10 +153,13 @@ public class SingChoiceImageActivity extends BaseActivity {
         } else {
             if (FileUtils.isImageFile(mImageFile)) {
                 if (!CompressImageTask.get().isCompressImage()) {
+                    final ViewGroup viewGroup = (ViewGroup) getWindow().getDecorView();
+                    final View inflate = LayoutInflater.from(SingChoiceImageActivity.this).inflate(R.layout.item_loading_view, viewGroup, false);
+
                     CompressImageTask.get().compressImage(SingChoiceImageActivity.this, ImageConfig.getDefaultConfig(mImageFile.getAbsolutePath()), new CompressImageTask.OnImageResult() {
                         @Override
                         public void startCompress() {
-
+                            viewGroup.addView(inflate);
                         }
 
                         @Override
@@ -166,10 +170,16 @@ public class SingChoiceImageActivity extends BaseActivity {
                                 Glide.with(SingChoiceImageActivity.this).load(file).into(mCompressImageView);
                             }
                             mCompressText.setText("Size:" + FileUtils.imageSize(file.length()));
+                            if (viewGroup.indexOfChild(inflate) != -1) {
+                                viewGroup.removeView(inflate);
+                            }
                         }
 
                         @Override
                         public void resultFileError() {
+                            if (viewGroup.indexOfChild(inflate) != -1) {
+                                viewGroup.removeView(inflate);
+                            }
                         }
                     });
                 } else {
