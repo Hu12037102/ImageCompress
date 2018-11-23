@@ -112,7 +112,7 @@ public class MultipleChoiceImageActivity extends BaseActivity {
             @Override
             public void onPictureItemClick(View view, int position) {
                 mPreviewStatus = 0;
-                toPreviewActivity(view, position,mPreviewOriginalData);
+                toPreviewActivity(view, position, mPreviewOriginalData);
             }
         });
 
@@ -125,7 +125,7 @@ public class MultipleChoiceImageActivity extends BaseActivity {
             @Override
             public void onPictureItemClick(View view, int position) {
                 mPreviewStatus = 1;
-                toPreviewActivity(view, position,mPreviewCompressData);
+                toPreviewActivity(view, position, mPreviewCompressData);
             }
         });
 
@@ -184,13 +184,13 @@ public class MultipleChoiceImageActivity extends BaseActivity {
         });
     }
 
-    private void toPreviewActivity(View view, int position,List<String> list) {
+    private void toPreviewActivity(View view, int position, List<String> list) {
         Intent intent = new Intent(MultipleChoiceImageActivity.this, PreviewImageActivity.class);
         intent.putStringArrayListExtra(Contast.IMAGE_PATH_KEY, (ArrayList<String>) list);
         intent.putExtra(Contast.CLICK_IMAGE_POSITION_KEY, position);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             PairHelp.setPreviewPosition(position);
-            LogUtils.w("initView-", PairHelp.PREVIEW_POSITION + "---"+ mPreviewOriginalData.size());
+            LogUtils.w("initView-", PairHelp.PREVIEW_POSITION + "---" + mPreviewOriginalData.size());
             Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(this
                     , PairHelp.addPair(view)).toBundle();
             startActivity(intent, bundle);
@@ -199,6 +199,16 @@ public class MultipleChoiceImageActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void imageFileResult(ImageFileBean bean) {
+        super.imageFileResult(bean);
+        if (mOriginalPictureList.size() > 0) {
+            mOriginalPictureList.add(mOriginalPictureList.size() - 1, bean);
+            mOriginalAdapter.notifyDataSetChanged();
+        }
+            mPreviewOriginalData.add(mPreviewOriginalData.size(), bean.imageFile.getAbsolutePath());
+
+    }
 
     @Override
     protected void imageFilesResult(List<ImageFileBean> data) {

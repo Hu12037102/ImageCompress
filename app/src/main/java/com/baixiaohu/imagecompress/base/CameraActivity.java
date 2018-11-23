@@ -69,6 +69,7 @@ public abstract class CameraActivity extends PermissionActivity {
     private void onCamera() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         cameraIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
             mCameraFile = FileUtils.resultImageFile();
             Uri cameraUri = FileUtils.fileToUri(this, mCameraFile, cameraIntent);
@@ -157,6 +158,7 @@ public abstract class CameraActivity extends PermissionActivity {
                         FileUtils.scanImage(this, mCameraFile);
                         ImageFileBean bean = new ImageFileBean();
                         bean.imageFile = mCameraFile;
+                        bean.isImage = true;
                         if (bean.imageFile != null && FileUtils.isImageFile(bean.imageFile)) {
                             bean.imageSize = FileUtils.imageSize(bean.imageFile.length());
                         }

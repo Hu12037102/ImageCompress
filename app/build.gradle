@@ -1,9 +1,9 @@
 apply plugin: 'com.android.application'
 
 android {
-    lintOptions {
+    /*lintOptions {
         abortOnError false
-    }
+    }*/
 
 
     aaptOptions {
