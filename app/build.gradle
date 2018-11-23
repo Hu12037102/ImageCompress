@@ -14,14 +14,14 @@ android {
 
 
 
-        signingConfigs {
+      /*  signingConfigs {
         release {
             keyAlias 'key'
             keyPassword '123456'
             storeFile file('D:/AndroidWork/ImageCompress/key.jks')
             storePassword '123456'
         }
-    }
+    }*/
     defaultConfig {
         def versions = rootProject.ext.android
         compileSdkVersion versions.compileSdkVersion
@@ -36,10 +36,10 @@ android {
     }
     buildTypes {
         release {
-            signingConfig signingConfigs.release
+          //  signingConfig signingConfigs.release
             //是否清理无用资源
-            shrinkResources true
-            minifyEnabled true
+           // shrinkResources true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("boolean", "IS_DEBUG", "false")
 
@@ -47,7 +47,7 @@ android {
             zipAlignEnabled true
             pseudoLocalesEnabled true
         }
-         debug{
+        /* debug{
              signingConfig signingConfigs.release
              //是否清理无用资源
              shrinkResources false
@@ -57,7 +57,7 @@ android {
              //是否启用zipAlign压缩
              zipAlignEnabled true
              pseudoLocalesEnabled true
-         }
+         }*/
     }
 }
 
