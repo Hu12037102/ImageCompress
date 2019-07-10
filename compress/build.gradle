@@ -29,5 +29,5 @@ dependencies {
     androidTestImplementation versions.espresso
     implementation versions.rxjava
     implementation versions.rxandroid
-    implementation versions.rxlifecycleComponents
+ //   implementation versions.rxlifecycleComponents
 }

@@ -3,19 +3,15 @@ package utils.task;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.util.Log;
-
-import com.trello.rxlifecycle2.components.RxActivity;
-import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
-
 import java.io.File;
 import java.util.List;
-
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -37,17 +33,15 @@ import utils.bean.ImageConfig;
 
 public class CompressImageTask {
     private boolean mIsCompressing;
+    private final CompositeDisposable mDisposable;
 
     public boolean isCompressImage() {
         return mIsCompressing;
     }
 
-    public void onRecycle() {
-      /*  mActivity = null;
-        mTask = null;*/
-    }
 
     private CompressImageTask() {
+        mDisposable = new CompositeDisposable();
     }
 
     private static CompressImageTask mTask = null;
@@ -69,14 +63,14 @@ public class CompressImageTask {
      * @param imageConfig    bean
      * @param onBitmapResult 结果回调
      */
-    public void compressBitmap(@NonNull RxAppCompatActivity activity, @NonNull final ImageConfig imageConfig, final @NonNull OnBitmapResult onBitmapResult) {
+    public void compressBitmap(@NonNull final ImageConfig imageConfig, final @NonNull OnBitmapResult onBitmapResult) {
         onBitmapResult.startCompress();
         Observable.create(new ObservableOnSubscribe<ImageConfig>() {
             @Override
             public void subscribe(ObservableEmitter<ImageConfig> e) throws Exception {
                 e.onNext(imageConfig);
             }
-        }).compose(activity.<ImageConfig>bindToLifecycle())
+        })
                 .map(new Function<ImageConfig, Bitmap>() {
                     @Override
                     public Bitmap apply(ImageConfig imageConfig) throws Exception {
@@ -87,7 +81,7 @@ public class CompressImageTask {
                 .subscribe(new Observer<Bitmap>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        mDisposable.add(d);
                     }
 
                     @Override
@@ -116,7 +110,7 @@ public class CompressImageTask {
      * @param imageConfig   bean
      * @param onImageResult 回调数据
      */
-    public void compressImage(@NonNull RxAppCompatActivity activity, @NonNull final ImageConfig imageConfig, final @NonNull OnImageResult onImageResult) {
+    public void compressImage( @NonNull final ImageConfig imageConfig, final @NonNull OnImageResult onImageResult) {
         Log.w("subscribe---", Thread.currentThread().getName());
         onImageResult.startCompress();
         Observable.create(new ObservableOnSubscribe<ImageConfig>() {
@@ -125,7 +119,7 @@ public class CompressImageTask {
                 e.onNext(imageConfig);
                 mIsCompressing = true;
             }
-        }).compose(activity.<ImageConfig>bindToLifecycle())
+        })
                 .map(new Function<ImageConfig, File>() {
                     @Override
                     public File apply(ImageConfig imageConfig) throws Exception {
@@ -137,7 +131,7 @@ public class CompressImageTask {
                 .subscribe(new Observer<File>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        mDisposable.add(d);
                         LogUtils.w("compressImage--", "onSubscribe");
                     }
 
@@ -172,12 +166,12 @@ public class CompressImageTask {
      * @param list              集合
      * @param onImageListResult 结果回调
      */
-    public void compressImages(@NonNull RxAppCompatActivity activity, @NonNull final List<ImageConfig> list, final @NonNull OnImagesResult onImageListResult) {
+    public void compressImages( @NonNull final List<ImageConfig> list, final @NonNull OnImagesResult onImageListResult) {
         if (list.size() == 0) {
             return;
         }
         onImageListResult.startCompress();
-        Observable.fromIterable(list).compose(activity.<ImageConfig>bindToLifecycle())
+        Observable.fromIterable(list)
                 .map(new Function<ImageConfig, File>() {
                     @Override
                     public File apply(ImageConfig imageConfig) throws Exception {
@@ -191,7 +185,7 @@ public class CompressImageTask {
                 .subscribe(new SingleObserver<List<File>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        mDisposable.add(d);
                     }
 
                     @Override
@@ -211,6 +205,15 @@ public class CompressImageTask {
                 });
     }
 
+    public void deathCompress(){
+        if (!mDisposable.isDisposed()) {
+            mDisposable.dispose();
+        }
+        if (mDisposable.size() > 0) {
+            mDisposable.clear();
+        }
+
+    }
 
     public interface OnImagesResult {
         void startCompress();

@@ -156,7 +156,7 @@ public class SingChoiceImageActivity extends BaseActivity {
                     final ViewGroup viewGroup = (ViewGroup) getWindow().getDecorView();
                     final View inflate = LayoutInflater.from(SingChoiceImageActivity.this).inflate(R.layout.item_loading_view, viewGroup, false);
 
-                    CompressImageTask.get().compressImage(SingChoiceImageActivity.this, ImageConfig.getDefaultConfig(mImageFile.getAbsolutePath()), new CompressImageTask.OnImageResult() {
+                    CompressImageTask.get().compressImage( ImageConfig.getDefaultConfig(mImageFile.getAbsolutePath()), new CompressImageTask.OnImageResult() {
                         @Override
                         public void startCompress() {
                             viewGroup.addView(inflate);
@@ -224,8 +224,9 @@ public class SingChoiceImageActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
+        CompressImageTask.get().deathCompress();
         super.onDestroy();
-        CompressImageTask.get().onRecycle();
+
     }
 
 }

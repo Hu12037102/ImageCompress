@@ -152,7 +152,7 @@ public class MultipleChoiceImageActivity extends BaseActivity {
                 }
                 final ViewGroup viewGroup = (ViewGroup) getWindow().getDecorView();
                 final View inflate = LayoutInflater.from(MultipleChoiceImageActivity.this).inflate(R.layout.item_loading_view, viewGroup, false);
-                CompressImageTask.get().compressImages(MultipleChoiceImageActivity.this, data, new CompressImageTask.OnImagesResult() {
+                CompressImageTask.get().compressImages(data, new CompressImageTask.OnImagesResult() {
                     @Override
                     public void startCompress() {
                         viewGroup.addView(inflate);
@@ -246,4 +246,9 @@ public class MultipleChoiceImageActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        CompressImageTask.get().deathCompress();
+        super.onDestroy();
+    }
 }
