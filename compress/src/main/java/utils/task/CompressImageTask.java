@@ -3,8 +3,10 @@ package utils.task;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.util.Log;
+
 import java.io.File;
 import java.util.List;
+
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -55,6 +57,9 @@ public class CompressImageTask {
             }
         }
         return mTask;
+     /*  synchronized (CompressImageTask.class){
+           return new CompressImageTask();
+       }*/
     }
 
     /**
@@ -110,7 +115,7 @@ public class CompressImageTask {
      * @param imageConfig   bean
      * @param onImageResult 回调数据
      */
-    public void compressImage( @NonNull final ImageConfig imageConfig, final @NonNull OnImageResult onImageResult) {
+    public void compressImage(@NonNull final ImageConfig imageConfig, final @NonNull OnImageResult onImageResult) {
         Log.w("subscribe---", Thread.currentThread().getName());
         onImageResult.startCompress();
         Observable.create(new ObservableOnSubscribe<ImageConfig>() {
@@ -166,7 +171,7 @@ public class CompressImageTask {
      * @param list              集合
      * @param onImageListResult 结果回调
      */
-    public void compressImages( @NonNull final List<ImageConfig> list, final @NonNull OnImagesResult onImageListResult) {
+    public void compressImages(@NonNull final List<ImageConfig> list, final @NonNull OnImagesResult onImageListResult) {
         if (list.size() == 0) {
             return;
         }
@@ -205,14 +210,14 @@ public class CompressImageTask {
                 });
     }
 
-    public void deathCompress(){
+    public void deathCompress() {
         if (!mDisposable.isDisposed()) {
             mDisposable.dispose();
         }
         if (mDisposable.size() > 0) {
             mDisposable.clear();
         }
-
+        mTask = null;
     }
 
     public interface OnImagesResult {
