@@ -21,7 +21,7 @@
 	</br>}
   </br>
   dependencies {
-	      </br> implementation 'com.github.Hu12037102.ImageCompress:compress:2.1.1'
+	      </br> implementation 'com.github.Hu12037102.ImageCompress:compress:2.1.2'
 	</br>}
 	
 ```java
