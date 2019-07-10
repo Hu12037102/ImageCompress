@@ -32,6 +32,7 @@ public class BaseApplication extends MultiDexApplication {
             return;
         }
         LeakCanary.install(this);*/
+
         Toasts.init(this);
         UiUtils.init(this);
 
