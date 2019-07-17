@@ -1,23 +1,22 @@
 package utils.task;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
+
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
-import io.reactivex.SingleObserver;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
 import utils.CompressPicker;
+import utils.FileUtils;
 import utils.LogUtils;
 import utils.bean.ImageConfig;
 
@@ -35,7 +34,12 @@ import utils.bean.ImageConfig;
 
 public class CompressImageTask {
     private boolean mIsCompressing;
-    private final CompositeDisposable mDisposable;
+    private ExecutorService mThreadService;
+    private final Handler mMainHandler;
+    private static final int BITMAP_WHAT = 100;
+    private static final int IMAGE_WAHT = 200;
+    private static final int IMAGES_WHAT = 300;
+    // private final CompositeDisposable mDisposable;
 
     public boolean isCompressImage() {
         return mIsCompressing;
@@ -43,7 +47,10 @@ public class CompressImageTask {
 
 
     private CompressImageTask() {
-        mDisposable = new CompositeDisposable();
+        //mDisposable = new CompositeDisposable();
+        mThreadService = Executors.newCachedThreadPool();
+        mMainHandler = new Handler(Looper.getMainLooper());
+        LogUtils.w("CompressImageTask--", "我被创建了------" + CompressImageTask.class.hashCode());
     }
 
     private static CompressImageTask mTask = null;
@@ -56,6 +63,7 @@ public class CompressImageTask {
                 }
             }
         }
+
         return mTask;
      /*  synchronized (CompressImageTask.class){
            return new CompressImageTask();
@@ -68,9 +76,32 @@ public class CompressImageTask {
      * @param imageConfig    bean
      * @param onBitmapResult 结果回调
      */
-    public void compressBitmap(@NonNull final ImageConfig imageConfig, final @NonNull OnBitmapResult onBitmapResult) {
+    public void compressBitmap(final Activity activity, @NonNull final ImageConfig imageConfig, @NonNull final OnBitmapResult onBitmapResult) {
+        if (activity == null) {
+            return;
+        }
+        mIsCompressing = true;
         onBitmapResult.startCompress();
-        Observable.create(new ObservableOnSubscribe<ImageConfig>() {
+        mThreadService.execute(new Runnable() {
+            @Override
+            public void run() {
+                final Bitmap bitmap = CompressPicker.compressBitmap(imageConfig);
+                mIsCompressing = false;
+                if (!activity.isFinishing()) {
+                    mMainHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (bitmap != null && bitmap.getHeight() > 0 && bitmap.getWidth() > 0) {
+                                onBitmapResult.resultBitmapSucceed(bitmap);
+                            } else {
+                                onBitmapResult.resultBitmapError();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+        /*Observable.get(new ObservableOnSubscribe<ImageConfig>() {
             @Override
             public void subscribe(ObservableEmitter<ImageConfig> e) throws Exception {
                 e.onNext(imageConfig);
@@ -107,7 +138,7 @@ public class CompressImageTask {
                     public void onComplete() {
 
                     }
-                });
+                });*/
     }
 
 
@@ -115,10 +146,33 @@ public class CompressImageTask {
      * @param imageConfig   bean
      * @param onImageResult 回调数据
      */
-    public void compressImage(@NonNull final ImageConfig imageConfig, final @NonNull OnImageResult onImageResult) {
-        Log.w("subscribe---", Thread.currentThread().getName());
+    public void compressImage(final Activity activity, @NonNull final ImageConfig imageConfig, final @NonNull OnImageResult onImageResult) {
+        Log.w("subscribe---", Thread.currentThread().getName() + "--" + mThreadService.isShutdown());
+        if (activity == null) {
+            return;
+        }
+        mIsCompressing = true;
         onImageResult.startCompress();
-        Observable.create(new ObservableOnSubscribe<ImageConfig>() {
+        mThreadService.execute(new Runnable() {
+            @Override
+            public void run() {
+                final File file = CompressPicker.bitmapToFile(CompressPicker.compressBitmap(imageConfig));
+                mIsCompressing = false;
+                if (!activity.isFinishing()) {
+                    mMainHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (FileUtils.isImageFile(file)) {
+                                onImageResult.resultFileSucceed(file);
+                            } else {
+                                onImageResult.resultFileError();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+        /*Observable.get(new ObservableOnSubscribe<ImageConfig>() {
             @Override
             public void subscribe(ObservableEmitter<ImageConfig> e) throws Exception {
                 e.onNext(imageConfig);
@@ -161,7 +215,7 @@ public class CompressImageTask {
                         mIsCompressing = false;
                         LogUtils.w("compressImage--", "onComplete");
                     }
-                });
+                });*/
     }
 
 
@@ -171,12 +225,39 @@ public class CompressImageTask {
      * @param list              集合
      * @param onImageListResult 结果回调
      */
-    public void compressImages(@NonNull final List<ImageConfig> list, final @NonNull OnImagesResult onImageListResult) {
-        if (list.size() == 0) {
+    public void compressImages(final Activity activity, @NonNull final List<ImageConfig> list, final @NonNull OnImagesResult onImageListResult) {
+        if (list.size() == 0 || activity == null || activity.isFinishing()) {
             return;
         }
+        Log.w("subscribe--", Thread.currentThread().getName() + "--" + mThreadService.isTerminated() + "--" + mThreadService.isShutdown());
+        mIsCompressing = true;
         onImageListResult.startCompress();
-        Observable.fromIterable(list)
+        final List<File> fileList = new ArrayList<>();
+        mThreadService.execute(new Runnable() {
+            @Override
+            public void run() {
+                for (ImageConfig imageConfig : list) {
+                    File file = CompressPicker.bitmapToFile(CompressPicker.compressBitmap(imageConfig));
+                    CompressPicker.bitmapToFile(CompressPicker.compressBitmap(imageConfig));
+                    fileList.add(file);
+                }
+                mIsCompressing = false;
+                if (!activity.isFinishing()) {
+                    mMainHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (fileList.size() > 0) {
+                                onImageListResult.resultFilesSucceed(fileList);
+                            } else {
+                                onImageListResult.resultFilesError();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+        /*Observable.fromIterable(list)
                 .map(new Function<ImageConfig, File>() {
                     @Override
                     public File apply(ImageConfig imageConfig) throws Exception {
@@ -207,17 +288,17 @@ public class CompressImageTask {
                     public void onError(Throwable e) {
 
                     }
-                });
+                });*/
     }
 
     public void deathCompress() {
-        if (!mDisposable.isDisposed()) {
+       /* if (!mDisposable.isDisposed()) {
             mDisposable.dispose();
         }
         if (mDisposable.size() > 0) {
             mDisposable.clear();
         }
-        mTask = null;
+        mTask = null;*/
     }
 
     public interface OnImagesResult {

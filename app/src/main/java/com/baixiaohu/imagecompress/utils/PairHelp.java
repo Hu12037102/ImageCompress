@@ -1,11 +1,9 @@
 package com.baixiaohu.imagecompress.utils;
 
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.v4.util.Pair;
+import androidx.annotation.NonNull;
+import androidx.core.util.Pair;
 import android.view.View;
-
-import utils.LogUtils;
 
 public class PairHelp {
     private static final String PREVIEW_KEY = "preview_image";

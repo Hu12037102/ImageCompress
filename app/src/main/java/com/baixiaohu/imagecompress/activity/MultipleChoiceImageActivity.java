@@ -3,10 +3,10 @@ package com.baixiaohu.imagecompress.activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +57,7 @@ public class MultipleChoiceImageActivity extends BaseActivity {
         mRlCompress = findViewById(R.id.ry_compress);
         mRlCompress.setLayoutManager(new GridLayoutManager(this, 3));
         mBtnCompress = findViewById(R.id.btn_compress);
-        ActivityCompat.setExitSharedElementCallback(this, new android.support.v4.app.SharedElementCallback() {
+        ActivityCompat.setExitSharedElementCallback(this, new androidx.core.app.SharedElementCallback() {
             @Override
             public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
                 super.onMapSharedElements(names, sharedElements);
@@ -152,7 +152,7 @@ public class MultipleChoiceImageActivity extends BaseActivity {
                 }
                 final ViewGroup viewGroup = (ViewGroup) getWindow().getDecorView();
                 final View inflate = LayoutInflater.from(MultipleChoiceImageActivity.this).inflate(R.layout.item_loading_view, viewGroup, false);
-                CompressImageTask.get().compressImages(data, new CompressImageTask.OnImagesResult() {
+                CompressImageTask.get().compressImages(MultipleChoiceImageActivity.this,data, new CompressImageTask.OnImagesResult() {
                     @Override
                     public void startCompress() {
                         viewGroup.addView(inflate);

@@ -1,9 +1,9 @@
 package com.baixiaohu.imagecompress.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v4.util.Pair;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.core.util.Pair;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,8 +18,6 @@ import com.baixiaohu.imagecompress.utils.PairHelp;
 
 import utils.UiUtils;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.ViewHolder> {

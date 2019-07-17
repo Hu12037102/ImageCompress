@@ -3,9 +3,11 @@ package com.baixiaohu.imagecompress.activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.SharedElementCallback;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.app.SharedElementCallback;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -156,7 +158,7 @@ public class SingChoiceImageActivity extends BaseActivity {
                     final ViewGroup viewGroup = (ViewGroup) getWindow().getDecorView();
                     final View inflate = LayoutInflater.from(SingChoiceImageActivity.this).inflate(R.layout.item_loading_view, viewGroup, false);
 
-                    CompressImageTask.get().compressImage( ImageConfig.getDefaultConfig(mImageFile.getAbsolutePath()), new CompressImageTask.OnImageResult() {
+                    CompressImageTask.get().compressImage(SingChoiceImageActivity.this, ImageConfig.getDefaultConfig(mImageFile.getAbsolutePath()), new CompressImageTask.OnImageResult() {
                         @Override
                         public void startCompress() {
                             viewGroup.addView(inflate);

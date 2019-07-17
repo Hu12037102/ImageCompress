@@ -9,7 +9,7 @@ android {
         targetSdkVersion versions.targetSdkVersion
         versionCode versions.versionCode
         versionName versions.versionName
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildToolsVersion versions.buildToolsVersion
     }
   /*  buildTypes {
@@ -27,7 +27,7 @@ dependencies {
     testImplementation versions.junit
     androidTestImplementation versions.runner
     androidTestImplementation versions.espresso
-    implementation versions.rxjava
-    implementation versions.rxandroid
+  //  implementation versions.rxjava
+   // implementation versions.rxandroid
  //   implementation versions.rxlifecycleComponents
 }

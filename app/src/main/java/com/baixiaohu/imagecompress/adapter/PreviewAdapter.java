@@ -1,25 +1,20 @@
 package com.baixiaohu.imagecompress.adapter;
 
 import android.app.Activity;
-import android.content.res.Resources;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.util.DisplayMetrics;
+import androidx.annotation.NonNull;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.baixiaohu.imagecompress.utils.GlideUtils;
-import com.baixiaohu.imagecompress.utils.PairHelp;
-import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.OnPhotoTapListener;
 import com.github.chrisbanes.photoview.PhotoView;
 
 import java.util.List;
-
-import utils.LogUtils;
 
 public class PreviewAdapter extends PagerAdapter {
     private List<String> mFilePathData;

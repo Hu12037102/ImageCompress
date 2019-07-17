@@ -30,7 +30,7 @@ android {
         targetSdkVersion versions.targetSdkVersion
         versionCode versions.versionCode
         versionName versions.versionName
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildToolsVersion versions.buildToolsVersion
         resConfigs "zh"
     }
@@ -67,7 +67,7 @@ dependencies {
     //noinspection GradleCompatible
     implementation versions.appcompatV7
     implementation versions.constraint
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     testImplementation versions.junit
     androidTestImplementation versions.runner
     androidTestImplementation versions.espresso

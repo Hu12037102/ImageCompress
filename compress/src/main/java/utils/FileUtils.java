@@ -9,8 +9,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.OpenableColumns;
-import android.support.annotation.NonNull;
-import android.support.v4.content.FileProvider;
+import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 import android.util.Log;
 
 import java.io.File;
@@ -21,14 +21,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.List;
-
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * 项  目 :  ImageCompress
@@ -192,27 +184,18 @@ public class FileUtils {
      * @param file 文件或者文件夹
      */
     public static void deleteAllFile(final @NonNull File file) {
-        Observable.create(new ObservableOnSubscribe<File>() {
-            @Override
-            public void subscribe(ObservableEmitter<File> e) throws Exception {
-                if (file.exists()) {
-                    if (file.isFile()) {
-                        file.delete();
-                    } else if (file.isDirectory()) {
-                        File[] files = file.listFiles();
-                        if (files != null && files.length > 0) {
-                            for (int i = 0; i < files.length; i++) {
-                                deleteAllFile(files[i]);
-                            }
-                        }
+        if (file.exists()) {
+            if (file.isFile()) {
+                file.delete();
+            } else if (file.isDirectory()) {
+                File[] files = file.listFiles();
+                if (files != null && files.length > 0) {
+                    for (File childFile : files) {
+                        deleteAllFile(childFile);
                     }
                 }
-                e.onNext(file);
-                LogUtils.w("deleteAllFile--", Thread.currentThread().getName());
             }
-        }).observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+        }
 
     }
 

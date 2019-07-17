@@ -1,10 +1,9 @@
 package com.baixiaohu.imagecompress.aplication;
 
-import android.support.multidex.MultiDexApplication;
+import androidx.multidex.MultiDexApplication;
 
 import com.baixiaohu.imagecompress.toast.Toasts;
 import utils.UiUtils;
-import com.squareup.leakcanary.LeakCanary;
 
 /**
  * 项  目 :  ImageCompress
