@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
+import android.os.Build;
+
 import androidx.annotation.NonNull;
 
 
@@ -50,8 +52,11 @@ public class CompressPicker {
             BitmapFactory.decodeFile(imageConfig.imagePath, options);
             options.inSampleSize = (int) ((options.outWidth * 1.0f) / (imageConfig.compressWidth * 1.0f) + (options.outHeight * 1.0f) / (imageConfig.compressHeight * 1.0f)) / 2;
             options.inJustDecodeBounds = false;
-            options.inScaled = false;
+            options.inScaled = true;
             options.inMutable = true;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                options.inPremultiplied = true;
+            }
             bitmap = BitmapFactory.decodeFile(imageConfig.imagePath, options);
             ExifInterface exif;
             try {
@@ -81,6 +86,7 @@ public class CompressPicker {
         return bitmap;
     }
 
+
     /**
      * Bitmap to File
      *
@@ -94,7 +100,12 @@ public class CompressPicker {
         FileOutputStream fos = null;
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         int quality = 100;
-        bitmap.compress(mImageConfig.format, quality, bos);
+        boolean result = bitmap.compress(mImageConfig.format, quality, bos);
+        if (!result) {
+            //  bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, false);
+            bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+            bitmap.compress(mImageConfig.format, quality, bos);
+        }
         while (bos.toByteArray().length / CompressPicker.BYTE_MONAD > mImageConfig.compressSize) {
             bos.reset();
             quality -= 5;

@@ -9,8 +9,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.OpenableColumns;
+
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
+
 import android.util.Log;
 
 import java.io.File;
@@ -160,7 +162,7 @@ public class FileUtils {
         if (file != null && file.exists() && file.isFile()) {
             String imagePath = file.getAbsolutePath();
             if (imagePath.endsWith(".jpg") || imagePath.endsWith(".jpeg") || imagePath.endsWith(".png") ||
-                    imagePath.endsWith(".bmp") || imagePath.endsWith(".webp")) {
+                    imagePath.endsWith(".bmp") || imagePath.endsWith(".webp") || imagePath.endsWith(".JPG")) {
                 return true;
             }
         }
