@@ -238,7 +238,6 @@ public class CompressImageTask {
             public void run() {
                 for (ImageConfig imageConfig : list) {
                     File file = CompressPicker.bitmapToFile(CompressPicker.compressBitmap(imageConfig));
-                    CompressPicker.bitmapToFile(CompressPicker.compressBitmap(imageConfig));
                     fileList.add(file);
                 }
                 mIsCompressing = false;
