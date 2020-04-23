@@ -34,7 +34,6 @@ public class CompressPicker {
      */
     public static final int COMPRESS_SIZE = 150;
     private static final int BYTE_MONAD = 1024;
-    private static ImageConfig mImageConfig;
 
     /**
      * 压缩Bitmap
@@ -45,7 +44,6 @@ public class CompressPicker {
     public static Bitmap compressBitmap(ImageConfig imageConfig) {
         Bitmap bitmap = null;
         if (null != imageConfig) {
-            CompressPicker.mImageConfig = imageConfig;
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inPreferredConfig = imageConfig.config;
             options.inJustDecodeBounds = true;
@@ -93,27 +91,26 @@ public class CompressPicker {
      * @param bitmap bitmap
      * @return file
      */
-    public static File bitmapToFile(@NonNull Bitmap bitmap) {
-        if (mImageConfig == null) {
-            mImageConfig = new ImageConfig();
-        }
+    public static File bitmapToFile(@NonNull Bitmap bitmap, @NonNull ImageConfig imageConfig) {
+
         FileOutputStream fos = null;
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         int quality = 100;
-        boolean result = bitmap.compress(mImageConfig.format, quality, bos);
+        boolean result = bitmap.compress(imageConfig.format, quality, bos);
         if (!result) {
             //  bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, false);
             bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-            bitmap.compress(mImageConfig.format, quality, bos);
+            bitmap.compress(imageConfig.format, quality, bos);
         }
-        while (bos.toByteArray().length / CompressPicker.BYTE_MONAD > mImageConfig.compressSize) {
+        while (bos.toByteArray().length / CompressPicker.BYTE_MONAD > imageConfig.compressSize) {
             bos.reset();
             quality -= 5;
             bitmap.compress(Bitmap.CompressFormat.JPEG, quality, bos);
         }
-        File file = new File(mImageConfig.cachePathDirectory);
-        file = FileUtils.outFileDirectory(file.getAbsolutePath());
-        File imageFile = new File(file.getAbsoluteFile(), mImageConfig.imageName);
+
+        //  File file = new File(imageConfig.);
+        File imageFile = new File(imageConfig.compressImagePath);
+        LogUtils.w("bitmapToFile--", imageFile.getAbsolutePath());
         try {
             fos = new FileOutputStream(imageFile);
             fos.write(bos.toByteArray(), 0, bos.toByteArray().length);

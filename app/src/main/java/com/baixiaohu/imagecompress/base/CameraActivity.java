@@ -71,7 +71,7 @@ public abstract class CameraActivity extends PermissionActivity {
         cameraIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-            mCameraFile = FileUtils.resultImageFile();
+            mCameraFile = FileUtils.resultImageFile(FileUtils.createDirectory(FileUtils.outFileDirectory(CameraActivity.this),"camera"));
             Uri cameraUri = FileUtils.fileToUri(this, mCameraFile, cameraIntent);
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraUri);
             startActivityForResult(cameraIntent, CameraActivity.OPEN_CAMERA_REQUEST_CODE);

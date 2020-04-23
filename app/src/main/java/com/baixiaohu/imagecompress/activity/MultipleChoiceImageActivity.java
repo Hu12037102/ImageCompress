@@ -3,10 +3,12 @@ package com.baixiaohu.imagecompress.activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -146,13 +148,13 @@ public class MultipleChoiceImageActivity extends BaseActivity {
                 List<ImageConfig> data = new ArrayList<>();
                 for (ImageFileBean imageFileBean : mOriginalPictureList) {
                     if (imageFileBean.isImage) {
-                        ImageConfig imageConfig = ImageConfig.getDefaultConfig(imageFileBean.imageFile.getAbsolutePath());
+                        ImageConfig imageConfig = ImageConfig.getDefaultConfig(imageFileBean.imageFile.getAbsolutePath(), FileUtils.resultImageFile(FileUtils.outFileDirectory(MultipleChoiceImageActivity.this)).getAbsolutePath());
                         data.add(imageConfig);
                     }
                 }
                 final ViewGroup viewGroup = (ViewGroup) getWindow().getDecorView();
                 final View inflate = LayoutInflater.from(MultipleChoiceImageActivity.this).inflate(R.layout.item_loading_view, viewGroup, false);
-                CompressImageTask.get().compressImages(MultipleChoiceImageActivity.this,data, new CompressImageTask.OnImagesResult() {
+                CompressImageTask.get().compressImages(MultipleChoiceImageActivity.this, data, new CompressImageTask.OnImagesResult() {
                     @Override
                     public void startCompress() {
                         viewGroup.addView(inflate);
@@ -215,7 +217,7 @@ public class MultipleChoiceImageActivity extends BaseActivity {
             mOriginalPictureList.add(mOriginalPictureList.size() - 1, bean);
             mOriginalAdapter.notifyDataSetChanged();
         }
-            mPreviewOriginalData.add(mPreviewOriginalData.size(), bean.imageFile.getAbsolutePath());
+        mPreviewOriginalData.add(mPreviewOriginalData.size(), bean.imageFile.getAbsolutePath());
 
     }
 

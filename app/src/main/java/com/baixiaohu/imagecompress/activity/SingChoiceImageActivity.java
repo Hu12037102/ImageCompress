@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import utils.FileUtils;
+import utils.LogUtils;
 import utils.bean.ImageConfig;
 import utils.task.CompressImageTask;
 
@@ -158,7 +159,8 @@ public class SingChoiceImageActivity extends BaseActivity {
                     final ViewGroup viewGroup = (ViewGroup) getWindow().getDecorView();
                     final View inflate = LayoutInflater.from(SingChoiceImageActivity.this).inflate(R.layout.item_loading_view, viewGroup, false);
 
-                    CompressImageTask.get().compressImage(SingChoiceImageActivity.this, ImageConfig.getDefaultConfig(mImageFile.getAbsolutePath()), new CompressImageTask.OnImageResult() {
+                    CompressImageTask.get().compressImage(SingChoiceImageActivity.this, ImageConfig.getDefaultConfig(mImageFile.getAbsolutePath(),
+                            FileUtils.resultImageFile(FileUtils.outFileDirectory(SingChoiceImageActivity.this)).getAbsolutePath()), new CompressImageTask.OnImageResult() {
                         @Override
                         public void startCompress() {
                             viewGroup.addView(inflate);
@@ -175,6 +177,7 @@ public class SingChoiceImageActivity extends BaseActivity {
                             if (viewGroup.indexOfChild(inflate) != -1) {
                                 viewGroup.removeView(inflate);
                             }
+                            LogUtils.w("mImageFile--", file.getAbsolutePath());
                         }
 
                         @Override

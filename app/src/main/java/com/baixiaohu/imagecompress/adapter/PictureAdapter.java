@@ -88,7 +88,7 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.ViewHold
 
         private void initView(View itemView) {
             mIvPicture = itemView.findViewById(R.id.iv_picture);
-            DisplayMetrics metrics = UiUtils.getContext().getResources().getDisplayMetrics();
+            DisplayMetrics metrics = itemView.getContext().getResources().getDisplayMetrics();
             ViewGroup.LayoutParams layoutParams = mIvPicture.getLayoutParams();
             layoutParams.width = metrics.widthPixels  / 3;
             layoutParams.height = metrics.widthPixels  / 3;

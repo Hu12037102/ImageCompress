@@ -2,6 +2,8 @@ package utils.bean;
 
 import android.graphics.Bitmap;
 
+import androidx.annotation.NonNull;
+
 import java.util.UUID;
 
 import utils.CompressPicker;
@@ -27,14 +29,15 @@ public class ImageConfig {
      */
     public int compressHeight = 1280;
     public String imagePath;
+    public String compressImagePath;
 
 
-    private ImageConfig(String imagePath) {
+    private ImageConfig(@NonNull String imagePath,@NonNull String compressImagePath) {
         this.imagePath = imagePath;
+        this.compressImagePath = compressImagePath;
     }
 
-    public ImageConfig() {
-    }
+
 
     /**
      * 图片格式
@@ -50,12 +53,12 @@ public class ImageConfig {
     /**
      * 默认缓存的目录
      */
-    public String cachePathDirectory = FileUtils.FILE_DIRECTOR_NAME;
+    //public String cachePathDirectory = FileUtils.FILE_DIRECTOR_NAME;
 
     /**
      * 默认的缓存图片名字
      */
-    public String imageName = "/hxb_" + String.valueOf(System.currentTimeMillis()) + UUID.randomUUID().toString().replaceAll("-", "").trim() + ".jpg";
+   // public String imageName = "/hxb_" + String.valueOf(System.currentTimeMillis()) + UUID.randomUUID().toString().replaceAll("-", "").trim() + ".jpg";
 
     /**
      * 调用默认压缩的图片配置属性
@@ -63,8 +66,8 @@ public class ImageConfig {
 
     public int compressSize = CompressPicker.COMPRESS_SIZE;
 
-        public static ImageConfig getDefaultConfig(String filePath){
-            return new ImageConfig(filePath);
+        public static ImageConfig getDefaultConfig(@NonNull String imagePath,@NonNull String compressImagePath){
+            return new ImageConfig(imagePath,compressImagePath);
         }
 
 }

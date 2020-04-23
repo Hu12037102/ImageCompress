@@ -5,7 +5,6 @@ android {
         abortOnError false
     }*/
 
-
     aaptOptions {
                  cruncherEnabled = false
                  useNewCruncher = false

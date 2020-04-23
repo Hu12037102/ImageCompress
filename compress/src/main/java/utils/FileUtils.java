@@ -40,29 +40,55 @@ public class FileUtils {
     public static final String FILE_DIRECTOR_NAME = "HuXiaobai/cache";
     private static final String FILE_DIRECTOR_HEAD_NAME = "HuXiaobai";
 
-    public static File outFileDirectory() {
-        String storageState = Environment.getExternalStorageState();
-        File rootFile = storageState.equals(Environment.MEDIA_MOUNTED) ? Environment.getExternalStorageDirectory() : UiUtils.getContext().getCacheDir();
-        rootFile = new File(rootFile.getAbsolutePath(), FILE_DIRECTOR_NAME);
-        if (!rootFile.exists() || !rootFile.isDirectory()) {
-            rootFile.mkdirs();
+    /**
+     * 外部存储
+     *
+     * @param context
+     * @return
+     */
+    public static File outFileDirectory(Context context) {
+        File rootFile;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            rootFile = context.getExternalFilesDir("");
+        } else {
+            String storageState = Environment.getExternalStorageState();
+            rootFile = storageState.equals(Environment.MEDIA_MOUNTED) ? Environment.getExternalStorageDirectory() : context.getFilesDir();
+            rootFile = new File(rootFile.getAbsolutePath(), FILE_DIRECTOR_NAME);
+
+        }
+
+        return rootFile;
+    }
+
+    /**
+     * 内部存储
+     *
+     * @param context
+     * @return
+     */
+    public static File dataFileDirectory(Context context) {
+        File rootFile;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            rootFile = context.getExternalFilesDir("cache");
+        } else {
+            rootFile = context.getCacheDir();
+
         }
         return rootFile;
     }
 
-    public static File outFileDirectory(String directorName) {
-        String storageState = Environment.getExternalStorageState();
-        File rootFile = storageState.equals(Environment.MEDIA_MOUNTED) ? Environment.getExternalStorageDirectory() : UiUtils.getContext().getCacheDir();
-        rootFile = new File(rootFile.getAbsolutePath(), directorName);
-        if (!rootFile.exists() || !rootFile.isDirectory()) {
-            rootFile.mkdirs();
+
+    public static File createDirectory(@NonNull File parent, @NonNull String directorName) {
+        File file = new File(parent, directorName);
+        if (!file.exists() || !file.isDirectory()) {
+            file.mkdirs();
         }
-        return rootFile;
+        return file;
     }
 
 
-    public static File resultImageFile() {
-        return new File(outFileDirectory().getAbsolutePath(), "hxb" + System.currentTimeMillis() + ".jpg");
+    public static File resultImageFile(@NonNull File parent) {
+        return new File(parent, "hxb" + System.currentTimeMillis() + ".jpg");
     }
 
     public static File getFileDirectorHead(Context context) {

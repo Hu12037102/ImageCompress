@@ -156,7 +156,7 @@ public class CompressImageTask {
         mThreadService.execute(new Runnable() {
             @Override
             public void run() {
-                final File file = CompressPicker.bitmapToFile(CompressPicker.compressBitmap(imageConfig));
+                final File file = CompressPicker.bitmapToFile(CompressPicker.compressBitmap(imageConfig),imageConfig);
                 mIsCompressing = false;
                 if (!activity.isFinishing()) {
                     mMainHandler.post(new Runnable() {
@@ -237,7 +237,7 @@ public class CompressImageTask {
             @Override
             public void run() {
                 for (ImageConfig imageConfig : list) {
-                    File file = CompressPicker.bitmapToFile(CompressPicker.compressBitmap(imageConfig));
+                    File file = CompressPicker.bitmapToFile(CompressPicker.compressBitmap(imageConfig),imageConfig);
                     fileList.add(file);
                 }
                 mIsCompressing = false;
