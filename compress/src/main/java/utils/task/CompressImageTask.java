@@ -156,14 +156,14 @@ public class CompressImageTask {
         mThreadService.execute(new Runnable() {
             @Override
             public void run() {
-                final File file = CompressPicker.bitmapToFile(CompressPicker.compressBitmap(imageConfig),imageConfig);
+                final File file = CompressPicker.bitmapToFile(CompressPicker.compressBitmap(imageConfig), imageConfig);
                 mIsCompressing = false;
                 if (!activity.isFinishing()) {
                     mMainHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             if (FileUtils.isImageFile(file)) {
-                                onImageResult.resultFileSucceed(file);
+                                onImageResult.resultFileSucceed(file, imageConfig.imagePath);
                             } else {
                                 onImageResult.resultFileError();
                             }
@@ -232,21 +232,23 @@ public class CompressImageTask {
         Log.w("subscribe--", Thread.currentThread().getName() + "--" + mThreadService.isTerminated() + "--" + mThreadService.isShutdown());
         mIsCompressing = true;
         onImageListResult.startCompress();
-        final List<File> fileList = new ArrayList<>();
+        final List<File> compressFileList = new ArrayList<>();
+        final List<String> masterPathList = new ArrayList<>();
         mThreadService.execute(new Runnable() {
             @Override
             public void run() {
                 for (ImageConfig imageConfig : list) {
-                    File file = CompressPicker.bitmapToFile(CompressPicker.compressBitmap(imageConfig),imageConfig);
-                    fileList.add(file);
+                    masterPathList.add(imageConfig.imagePath);
+                    File file = CompressPicker.bitmapToFile(CompressPicker.compressBitmap(imageConfig), imageConfig);
+                    compressFileList.add(file);
                 }
                 mIsCompressing = false;
                 if (!activity.isFinishing()) {
                     mMainHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            if (fileList.size() > 0) {
-                                onImageListResult.resultFilesSucceed(fileList);
+                            if (compressFileList.size() > 0) {
+                                onImageListResult.resultFilesSucceed(compressFileList, masterPathList);
                             } else {
                                 onImageListResult.resultFilesError();
                             }
@@ -303,7 +305,7 @@ public class CompressImageTask {
     public interface OnImagesResult {
         void startCompress();
 
-        void resultFilesSucceed(List<File> fileList);
+        void resultFilesSucceed(List<File> fileList, List<String> masterPathList);
 
         void resultFilesError();
     }
@@ -311,7 +313,7 @@ public class CompressImageTask {
     public interface OnImageResult {
         void startCompress();
 
-        void resultFileSucceed(File file);
+        void resultFileSucceed(File file, String masterPath);
 
         void resultFileError();
     }

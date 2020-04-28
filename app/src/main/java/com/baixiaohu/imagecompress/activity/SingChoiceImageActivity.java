@@ -167,7 +167,7 @@ public class SingChoiceImageActivity extends BaseActivity {
                         }
 
                         @Override
-                        public void resultFileSucceed(File file) {
+                        public void resultFileSucceed(File file, String masterPath) {
                             mCompressImageFile = file;
                             mFilePathData.add(file.getAbsolutePath());
                             if (!SingChoiceImageActivity.this.isFinishing()) {

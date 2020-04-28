@@ -161,7 +161,7 @@ public class MultipleChoiceImageActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void resultFilesSucceed(List<File> fileList) {
+                    public void resultFilesSucceed(List<File> fileList,List<String> masterPathList) {
                         if (mCompressPictureList.size() > 0) {
                             mCompressPictureList.clear();
                             mCompressAdapter.notifyDataSetChanged();
