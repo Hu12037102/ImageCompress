@@ -107,7 +107,6 @@ public class CompressPicker {
             quality -= 5;
             bitmap.compress(Bitmap.CompressFormat.JPEG, quality, bos);
         }
-
         //  File file = new File(imageConfig.);
         File imageFile = new File(imageConfig.compressImagePath);
         LogUtils.w("bitmapToFile--", imageFile.getAbsolutePath());
