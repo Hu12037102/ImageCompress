@@ -11,9 +11,6 @@ import com.baixiaohu.imagecompress.bean.ImageFileBean;
 import com.baixiaohu.imagecompress.dialog.PhotoDialog;
 import com.baixiaohu.imagecompress.permission.imp.OnPermissionsResult;
 import com.baixiaohu.imagecompress.toast.Toasts;
-import com.zhihu.matisse.Matisse;
-import com.zhihu.matisse.MimeType;
-import com.zhihu.matisse.engine.impl.GlideEngine;
 
 import java.io.File;
 import java.io.IOException;
@@ -122,14 +119,7 @@ public abstract class CameraActivity extends PermissionActivity {
     }
 
     protected void openZhiHuAlbum() {
-        Matisse.from(this)
-                .choose(MimeType.ofImage())
-                .countable(true)
-                .maxSelectable(9)
-                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
-                .thumbnailScale(0.85f)
-                .imageEngine(new GlideEngine())
-                .forResult(REQUEST_CODE_CHOOSE);
+
     }
 
     @Override
@@ -166,7 +156,7 @@ public abstract class CameraActivity extends PermissionActivity {
 
                     }
                 } else if (requestCode == REQUEST_CODE_CHOOSE) {
-                    List<String> pathData = Matisse.obtainPathResult(data);
+                 /*  List<String> pathData = Matisse.obtainPathResult(data);
                     if (pathData == null || pathData.size() == 0)
                         return;
                     List<ImageFileBean> imageFileBeanList = new ArrayList<>();
@@ -184,7 +174,7 @@ public abstract class CameraActivity extends PermissionActivity {
                         }
                     }
 
-                    imageFilesResult(imageFileBeanList);
+                    imageFilesResult(imageFileBeanList);*/
                 }
                 break;
             default:

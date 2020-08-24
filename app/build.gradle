@@ -81,7 +81,6 @@ dependencies {
     debugImplementation versions.leakcanarySupportFragment
     implementation versions.supportV4
     implementation versions.rxlifecycleComponents
-    implementation project(':matisse')
 }
 allprojects {
     repositories {

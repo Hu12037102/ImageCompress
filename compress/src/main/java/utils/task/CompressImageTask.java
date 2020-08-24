@@ -16,6 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import utils.CompressPicker;
+import utils.DataUtils;
 import utils.FileUtils;
 import utils.LogUtils;
 import utils.bean.ImageConfig;
@@ -36,10 +37,6 @@ public class CompressImageTask {
     private boolean mIsCompressing;
     private ExecutorService mThreadService;
     private final Handler mMainHandler;
-    private static final int BITMAP_WHAT = 100;
-    private static final int IMAGE_WAHT = 200;
-    private static final int IMAGES_WHAT = 300;
-    // private final CompositeDisposable mDisposable;
 
     public boolean isCompressImage() {
         return mIsCompressing;
@@ -47,10 +44,8 @@ public class CompressImageTask {
 
 
     private CompressImageTask() {
-        //mDisposable = new CompositeDisposable();
-        mThreadService = Executors.newCachedThreadPool();
+        mThreadService = Executors.newSingleThreadExecutor();
         mMainHandler = new Handler(Looper.getMainLooper());
-        LogUtils.w("CompressImageTask--", "我被创建了------" + CompressImageTask.class.hashCode());
     }
 
     private static CompressImageTask mTask = null;
@@ -65,9 +60,7 @@ public class CompressImageTask {
         }
 
         return mTask;
-     /*  synchronized (CompressImageTask.class){
-           return new CompressImageTask();
-       }*/
+
     }
 
     /**
@@ -76,10 +69,8 @@ public class CompressImageTask {
      * @param imageConfig    bean
      * @param onBitmapResult 结果回调
      */
-    public void compressBitmap(final Activity activity, @NonNull final ImageConfig imageConfig, @NonNull final OnBitmapResult onBitmapResult) {
-        if (activity == null) {
-            return;
-        }
+    public void compressBitmap( @NonNull final ImageConfig imageConfig, @NonNull final OnBitmapResult onBitmapResult) {
+
         mIsCompressing = true;
         onBitmapResult.startCompress();
         mThreadService.execute(new Runnable() {
@@ -87,58 +78,19 @@ public class CompressImageTask {
             public void run() {
                 final Bitmap bitmap = CompressPicker.compressBitmap(imageConfig);
                 mIsCompressing = false;
-                if (!activity.isFinishing()) {
-                    mMainHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (bitmap != null && bitmap.getHeight() > 0 && bitmap.getWidth() > 0) {
-                                onBitmapResult.resultBitmapSucceed(bitmap);
-                            } else {
-                                onBitmapResult.resultBitmapError();
-                            }
-                        }
-                    });
-                }
-            }
-        });
-        /*Observable.get(new ObservableOnSubscribe<ImageConfig>() {
-            @Override
-            public void subscribe(ObservableEmitter<ImageConfig> e) throws Exception {
-                e.onNext(imageConfig);
-            }
-        })
-                .map(new Function<ImageConfig, Bitmap>() {
+                mMainHandler.post(new Runnable() {
                     @Override
-                    public Bitmap apply(ImageConfig imageConfig) throws Exception {
-                        return CompressPicker.compressBitmap(imageConfig);
-                    }
-                }).observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Observer<Bitmap>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        mDisposable.add(d);
-                    }
-
-                    @Override
-                    public void onNext(Bitmap bitmap) {
+                    public void run() {
                         if (bitmap != null && bitmap.getHeight() > 0 && bitmap.getWidth() > 0) {
                             onBitmapResult.resultBitmapSucceed(bitmap);
                         } else {
                             onBitmapResult.resultBitmapError();
                         }
                     }
+                });
+            }
+        });
 
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });*/
     }
 
 
@@ -146,11 +98,9 @@ public class CompressImageTask {
      * @param imageConfig   bean
      * @param onImageResult 回调数据
      */
-    public void compressImage(final Activity activity, @NonNull final ImageConfig imageConfig, final @NonNull OnImageResult onImageResult) {
+    public void compressImage( @NonNull final ImageConfig imageConfig, final @NonNull OnImageResult onImageResult) {
         Log.w("subscribe---", Thread.currentThread().getName() + "--" + mThreadService.isShutdown());
-        if (activity == null) {
-            return;
-        }
+
         mIsCompressing = true;
         onImageResult.startCompress();
         mThreadService.execute(new Runnable() {
@@ -158,64 +108,19 @@ public class CompressImageTask {
             public void run() {
                 final File file = CompressPicker.bitmapToFile(CompressPicker.compressBitmap(imageConfig), imageConfig);
                 mIsCompressing = false;
-                if (!activity.isFinishing()) {
-                    mMainHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (FileUtils.isImageFile(file)) {
-                                onImageResult.resultFileSucceed(file, imageConfig.imagePath);
-                            } else {
-                                onImageResult.resultFileError();
-                            }
-                        }
-                    });
-                }
-            }
-        });
-        /*Observable.get(new ObservableOnSubscribe<ImageConfig>() {
-            @Override
-            public void subscribe(ObservableEmitter<ImageConfig> e) throws Exception {
-                e.onNext(imageConfig);
-                mIsCompressing = true;
-            }
-        })
-                .map(new Function<ImageConfig, File>() {
+                mMainHandler.post(new Runnable() {
                     @Override
-                    public File apply(ImageConfig imageConfig) throws Exception {
-                        Bitmap bitmap = CompressPicker.compressBitmap(imageConfig);
-                        return CompressPicker.bitmapToFile(bitmap);
-                    }
-                }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<File>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        mDisposable.add(d);
-                        LogUtils.w("compressImage--", "onSubscribe");
-                    }
-
-                    @Override
-                    public void onNext(File file) {
-                        LogUtils.w("compressImage--", "onNext");
-                        mIsCompressing = false;
-                        if (file != null) {
+                    public void run() {
+                        if (FileUtils.isImageFile(file)) {
                             onImageResult.resultFileSucceed(file);
                         } else {
                             onImageResult.resultFileError();
                         }
                     }
+                });
+            }
+        });
 
-                    @Override
-                    public void onError(Throwable e) {
-                        LogUtils.w("compressImage--", "onError");
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        mIsCompressing = false;
-                        LogUtils.w("compressImage--", "onComplete");
-                    }
-                });*/
     }
 
 
@@ -225,87 +130,44 @@ public class CompressImageTask {
      * @param list              集合
      * @param onImageListResult 结果回调
      */
-    public void compressImages(final Activity activity, @NonNull final List<ImageConfig> list, final @NonNull OnImagesResult onImageListResult) {
-        if (list.size() == 0 || activity == null || activity.isFinishing()) {
+    public void compressImages( @NonNull final List<ImageConfig> list, final @NonNull OnImagesResult onImageListResult) {
+        if (DataUtils.isListEmpty(list)) {
             return;
         }
         Log.w("subscribe--", Thread.currentThread().getName() + "--" + mThreadService.isTerminated() + "--" + mThreadService.isShutdown());
         mIsCompressing = true;
         onImageListResult.startCompress();
         final List<File> compressFileList = new ArrayList<>();
-        final List<String> masterPathList = new ArrayList<>();
         mThreadService.execute(new Runnable() {
             @Override
             public void run() {
                 for (ImageConfig imageConfig : list) {
-                    masterPathList.add(imageConfig.imagePath);
                     File file = CompressPicker.bitmapToFile(CompressPicker.compressBitmap(imageConfig), imageConfig);
                     compressFileList.add(file);
                 }
                 mIsCompressing = false;
-                if (!activity.isFinishing()) {
-                    mMainHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (compressFileList.size() > 0) {
-                                onImageListResult.resultFilesSucceed(compressFileList, masterPathList);
-                            } else {
-                                onImageListResult.resultFilesError();
-                            }
-                        }
-                    });
-                }
-            }
-        });
-
-        /*Observable.fromIterable(list)
-                .map(new Function<ImageConfig, File>() {
+                mMainHandler.post(new Runnable() {
                     @Override
-                    public File apply(ImageConfig imageConfig) throws Exception {
-                        mIsCompressing = true;
-                        return CompressPicker.bitmapToFile(CompressPicker.compressBitmap(imageConfig));
-                    }
-                })
-                .toList()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleObserver<List<File>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        mDisposable.add(d);
-                    }
-
-                    @Override
-                    public void onSuccess(List<File> files) {
-                        mIsCompressing = false;
-                        if (files.size() > 0) {
-                            onImageListResult.resultFilesSucceed(files);
+                    public void run() {
+                        if (compressFileList.size() > 0) {
+                            onImageListResult.resultFilesSucceed(compressFileList);
                         } else {
                             onImageListResult.resultFilesError();
                         }
                     }
+                });
+            }
+        });
 
-                    @Override
-                    public void onError(Throwable e) {
 
-                    }
-                });*/
     }
 
-    public void deathCompress() {
-       /* if (!mDisposable.isDisposed()) {
-            mDisposable.dispose();
-        }
-        if (mDisposable.size() > 0) {
-            mDisposable.clear();
-        }
-        mTask = null;*/
-    }
+
 
     public interface OnImagesResult {
         void startCompress();
 
-        void resultFilesSucceed(List<File> fileList, List<String> masterPathList);
+        void resultFilesSucceed(List<File> fileList);
 
         void resultFilesError();
     }
@@ -313,7 +175,7 @@ public class CompressImageTask {
     public interface OnImageResult {
         void startCompress();
 
-        void resultFileSucceed(File file, String masterPath);
+        void resultFileSucceed(File file);
 
         void resultFileError();
     }

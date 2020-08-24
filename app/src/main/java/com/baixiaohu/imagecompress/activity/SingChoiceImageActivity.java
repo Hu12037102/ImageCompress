@@ -159,7 +159,7 @@ public class SingChoiceImageActivity extends BaseActivity {
                     final ViewGroup viewGroup = (ViewGroup) getWindow().getDecorView();
                     final View inflate = LayoutInflater.from(SingChoiceImageActivity.this).inflate(R.layout.item_loading_view, viewGroup, false);
 
-                    CompressImageTask.get().compressImage(SingChoiceImageActivity.this, ImageConfig.getDefaultConfig(mImageFile.getAbsolutePath(),
+                    CompressImageTask.get().compressImage(ImageConfig.getDefaultConfig(mImageFile.getAbsolutePath(),
                             FileUtils.resultImageFile(FileUtils.outFileDirectory(SingChoiceImageActivity.this)).getAbsolutePath()), new CompressImageTask.OnImageResult() {
                         @Override
                         public void startCompress() {
@@ -167,7 +167,7 @@ public class SingChoiceImageActivity extends BaseActivity {
                         }
 
                         @Override
-                        public void resultFileSucceed(File file, String masterPath) {
+                        public void resultFileSucceed(File file) {
                             mCompressImageFile = file;
                             mFilePathData.add(file.getAbsolutePath());
                             if (!SingChoiceImageActivity.this.isFinishing()) {
@@ -229,7 +229,6 @@ public class SingChoiceImageActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        CompressImageTask.get().deathCompress();
         super.onDestroy();
 
     }

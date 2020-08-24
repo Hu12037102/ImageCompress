@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/AndroidWork-ImageCompress.iml" filepath="$PROJECT_DIR$/.idea/modules/AndroidWork-ImageCompress.iml" group="ImageCompress" />
       <module fileurl="file://$PROJECT_DIR$/ImageCompress.iml" filepath="$PROJECT_DIR$/ImageCompress.iml" group="ImageCompress" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/ImageCompress-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/ImageCompress-app.iml" group="ImageCompress/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/compress/ImageCompress-compress.iml" filepath="$PROJECT_DIR$/.idea/modules/compress/ImageCompress-compress.iml" group="ImageCompress/compress" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="ImageCompress/app" />
       <module fileurl="file://$PROJECT_DIR$/compress/compress.iml" filepath="$PROJECT_DIR$/compress/compress.iml" group="ImageCompress/compress" />
       <module fileurl="file://$PROJECT_DIR$/matisse/matisse.iml" filepath="$PROJECT_DIR$/matisse/matisse.iml" group="ImageCompress/matisse" />
