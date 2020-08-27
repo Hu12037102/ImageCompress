@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -42,6 +43,7 @@ public class CompressPicker {
      * @return 返回Bitmap
      */
     public static Bitmap compressBitmap(ImageConfig imageConfig) {
+        isCanCompress(imageConfig);
         Bitmap bitmap = null;
         if (null != imageConfig) {
             BitmapFactory.Options options = new BitmapFactory.Options();
@@ -84,6 +86,30 @@ public class CompressPicker {
         return bitmap;
     }
 
+    public static Bitmap loadBitmap(String path) {
+        if (FileUtils.existsFile(path)) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.RGB_565;
+            return BitmapFactory.decodeFile(path, options);
+        }
+        return null;
+    }
+
+    /**
+     * 判断图片要不要压缩
+     *
+     * @return
+     */
+    public static boolean isCanCompress(@NonNull ImageConfig imageConfig) {
+        if (FileUtils.existsStaticImageFile(imageConfig.imagePath)) {
+            File file = new File(imageConfig.imagePath);
+            float fileSize = (float) file.length() / CompressPicker.BYTE_MONAD;
+            int[] fileWidthHeights = FileUtils.getImageWidthHeight(file);
+            Log.w("isCanCompress--", fileSize + "--" + fileWidthHeights[0] + "--" + fileWidthHeights[1]);
+            return fileSize > imageConfig.compressSize || (fileWidthHeights[0] > imageConfig.compressWidth && fileWidthHeights[1] > imageConfig.compressHeight);
+        }
+        return false;
+    }
 
     /**
      * Bitmap to File

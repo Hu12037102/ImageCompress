@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -13,6 +15,7 @@ import android.provider.OpenableColumns;
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.File;
@@ -253,5 +256,41 @@ public class FileUtils {
             intent.setData(Uri.fromFile(file));
             context.sendBroadcast(intent);
         }
+    }
+    public static boolean existsStaticImageFile(@NonNull String path) {
+        if (existsFile(path)) {
+            String name = new File(path).getName();
+            return name.toLowerCase().endsWith(".jpg") || name.toLowerCase().endsWith(".jpeg")
+                    || name.toLowerCase().endsWith(".png") || name.toLowerCase().endsWith(".bpm")
+                    || name.toLowerCase().endsWith(".webp");
+        }
+        return false;
+    }
+    public static boolean existsFile(String filePath) {
+        if (TextUtils.isEmpty(filePath)) {
+            return false;
+        }
+        File file = new File(filePath);
+        return file.exists() && file.isFile();
+    }
+
+    public static int[] getImageWidthHeight(File file) {
+        int[] data = new int[2];
+        if (file != null && FileUtils.existsFile(file.getAbsolutePath())) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.RGB_565;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                options.outConfig = Bitmap.Config.RGB_565;
+            }
+            options.inJustDecodeBounds = true;
+            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+            data[0] = options.outWidth;
+            data[1] = options.outHeight;
+            if (bitmap != null && !bitmap.isRecycled()) {
+                bitmap.recycle();
+            }
+        }
+
+        return data;
     }
 }

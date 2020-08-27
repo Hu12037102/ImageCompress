@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -69,27 +71,44 @@ public class CompressImageTask {
      * @param imageConfig    bean
      * @param onBitmapResult 结果回调
      */
-    public void compressBitmap( @NonNull final ImageConfig imageConfig, @NonNull final OnBitmapResult onBitmapResult) {
+    public void compressBitmap(@NonNull final ImageConfig imageConfig, @Nullable final OnBitmapResult onBitmapResult) {
 
         mIsCompressing = true;
-        onBitmapResult.startCompress();
-        mThreadService.execute(new Runnable() {
-            @Override
-            public void run() {
-                final Bitmap bitmap = CompressPicker.compressBitmap(imageConfig);
-                mIsCompressing = false;
-                mMainHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (bitmap != null && bitmap.getHeight() > 0 && bitmap.getWidth() > 0) {
-                            onBitmapResult.resultBitmapSucceed(bitmap);
-                        } else {
-                            onBitmapResult.resultBitmapError();
+        if (onBitmapResult != null) {
+            onBitmapResult.startCompress();
+        }
+
+        if (CompressPicker.isCanCompress(imageConfig)) {
+            mThreadService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    final Bitmap bitmap = CompressPicker.compressBitmap(imageConfig);
+                    mIsCompressing = false;
+                    mMainHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (bitmap != null && bitmap.getHeight() > 0 && bitmap.getWidth() > 0) {
+                                if (onBitmapResult != null) {
+                                    onBitmapResult.resultBitmapSucceed(bitmap);
+                                }
+
+                            } else {
+                                if (onBitmapResult != null) {
+                                    onBitmapResult.resultBitmapError();
+                                }
+                            }
                         }
-                    }
-                });
+                    });
+                }
+            });
+        } else {
+            Bitmap bitmap = CompressPicker.loadBitmap(imageConfig.imagePath);
+            if (onBitmapResult != null) {
+                onBitmapResult.resultBitmapSucceed(bitmap);
             }
-        });
+
+        }
+
 
     }
 
@@ -98,28 +117,39 @@ public class CompressImageTask {
      * @param imageConfig   bean
      * @param onImageResult 回调数据
      */
-    public void compressImage( @NonNull final ImageConfig imageConfig, final @NonNull OnImageResult onImageResult) {
+    public void compressImage(@NonNull final ImageConfig imageConfig, @NonNull final OnImageResult onImageResult) {
         Log.w("subscribe---", Thread.currentThread().getName() + "--" + mThreadService.isShutdown());
 
         mIsCompressing = true;
         onImageResult.startCompress();
-        mThreadService.execute(new Runnable() {
-            @Override
-            public void run() {
-                final File file = CompressPicker.bitmapToFile(CompressPicker.compressBitmap(imageConfig), imageConfig);
-                mIsCompressing = false;
-                mMainHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (FileUtils.isImageFile(file)) {
-                            onImageResult.resultFileSucceed(file);
-                        } else {
-                            onImageResult.resultFileError();
+        if (CompressPicker.isCanCompress(imageConfig)) {
+            mThreadService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    final File file = CompressPicker.bitmapToFile(CompressPicker.compressBitmap(imageConfig), imageConfig);
+                    mIsCompressing = false;
+                    mMainHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (FileUtils.isImageFile(file)) {
+                                onImageResult.resultFileSucceed(file);
+                            } else {
+                                onImageResult.resultFileError();
+                            }
                         }
-                    }
-                });
+                    });
+                }
+            });
+        } else {
+            if (FileUtils.existsFile(imageConfig.imagePath)) {
+                File file = new File(imageConfig.imagePath);
+                onImageResult.resultFileSucceed(file);
+            } else {
+                onImageResult.resultFileError();
             }
-        });
+
+        }
+
 
     }
 
@@ -130,7 +160,7 @@ public class CompressImageTask {
      * @param list              集合
      * @param onImageListResult 结果回调
      */
-    public void compressImages( @NonNull final List<ImageConfig> list, final @NonNull OnImagesResult onImageListResult) {
+    public void compressImages(@NonNull final List<ImageConfig> list, final @NonNull OnImagesResult onImageListResult) {
         if (DataUtils.isListEmpty(list)) {
             return;
         }
@@ -142,7 +172,12 @@ public class CompressImageTask {
             @Override
             public void run() {
                 for (ImageConfig imageConfig : list) {
-                    File file = CompressPicker.bitmapToFile(CompressPicker.compressBitmap(imageConfig), imageConfig);
+                    File file;
+                    if (CompressPicker.isCanCompress(imageConfig)) {
+                        file = CompressPicker.bitmapToFile(CompressPicker.compressBitmap(imageConfig), imageConfig);
+                    } else {
+                        file = new File(imageConfig.imagePath);
+                    }
                     compressFileList.add(file);
                 }
                 mIsCompressing = false;
@@ -161,7 +196,6 @@ public class CompressImageTask {
 
 
     }
-
 
 
     public interface OnImagesResult {
