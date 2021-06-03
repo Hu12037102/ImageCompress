@@ -7,12 +7,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,8 +39,6 @@ import utils.bean.ImageConfig;
 
 public class CompressImageTask {
     private boolean mIsCompressing;
-    private ExecutorService mThreadService;
-    private final Handler mMainHandler;
 
     public boolean isCompressImage() {
         return mIsCompressing;
@@ -46,8 +46,6 @@ public class CompressImageTask {
 
 
     private CompressImageTask() {
-        mThreadService = Executors.newSingleThreadExecutor();
-        mMainHandler = new Handler(Looper.getMainLooper());
     }
 
     private static CompressImageTask mTask = null;
@@ -65,62 +63,14 @@ public class CompressImageTask {
 
     }
 
-    /**
-     * 返回压缩的Bitmap
-     *
-     * @param imageConfig    bean
-     * @param onBitmapResult 结果回调
-     */
-    public void compressBitmap(@NonNull final ImageConfig imageConfig, @Nullable final OnBitmapResult onBitmapResult) {
-
-        mIsCompressing = true;
-        if (onBitmapResult != null) {
-            onBitmapResult.startCompress();
-        }
-
-        if (CompressPicker.isCanCompress(imageConfig)) {
-            mThreadService.execute(new Runnable() {
-                @Override
-                public void run() {
-                    final Bitmap bitmap = CompressPicker.compressBitmap(imageConfig);
-                    mIsCompressing = false;
-                    mMainHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (bitmap != null && bitmap.getHeight() > 0 && bitmap.getWidth() > 0) {
-                                if (onBitmapResult != null) {
-                                    onBitmapResult.resultBitmapSucceed(bitmap);
-                                }
-
-                            } else {
-                                if (onBitmapResult != null) {
-                                    onBitmapResult.resultBitmapError();
-                                }
-                            }
-                        }
-                    });
-                }
-            });
-        } else {
-            Bitmap bitmap = CompressPicker.loadBitmap(imageConfig.imagePath);
-            if (onBitmapResult != null) {
-                onBitmapResult.resultBitmapSucceed(bitmap);
-            }
-
-        }
-
-
-    }
-
 
     /**
      * @param imageConfig   bean
      * @param onImageResult 回调数据
      */
-    public void compressImage(@NonNull final ImageConfig imageConfig, @NonNull final OnImageResult onImageResult) {
-        Log.w("subscribe---", Thread.currentThread().getName() + "--" + mThreadService.isShutdown());
+    public void compressImage(@NonNull final ImageConfig imageConfig, @NonNull final AsyncImageTask.OnImageResult onImageResult) {
 
-        mIsCompressing = true;
+       /* mIsCompressing = true;
         onImageResult.startCompress();
         if (CompressPicker.isCanCompress(imageConfig)) {
             mThreadService.execute(new Runnable() {
@@ -148,8 +98,11 @@ public class CompressImageTask {
                 onImageResult.resultFileError();
             }
 
-        }
-
+        }*/
+        AsyncImageTask task= AsyncImageTask.create();
+        ImageConfig[] imageConfigs = new ImageConfig[]{imageConfig};
+        task.execute(imageConfigs);
+        task.setOnImageResult(onImageResult);
 
     }
 
@@ -160,13 +113,12 @@ public class CompressImageTask {
      * @param list              集合
      * @param onImageListResult 结果回调
      */
-    public void compressImages(@NonNull final List<ImageConfig> list, final @NonNull OnImagesResult onImageListResult) {
+    public void compressImages(@NonNull final List<ImageConfig> list, final @NonNull AsyncImageTask.OnImagesResult onImageListResult) {
         if (DataUtils.isListEmpty(list)) {
             return;
         }
-        Log.w("subscribe--", Thread.currentThread().getName() + "--" + mThreadService.isTerminated() + "--" + mThreadService.isShutdown());
-        mIsCompressing = true;
-        onImageListResult.startCompress();
+    /*    mIsCompressing = true;
+       onImageListResult.startCompress();
         final List<File> compressFileList = new ArrayList<>();
         mThreadService.execute(new Runnable() {
             @Override
@@ -174,11 +126,14 @@ public class CompressImageTask {
                 for (ImageConfig imageConfig : list) {
                     File file;
                     if (CompressPicker.isCanCompress(imageConfig)) {
-                        file = CompressPicker.bitmapToFile(CompressPicker.compressBitmap(imageConfig), imageConfig);
+                        Bitmap bitmap = CompressPicker.compressBitmap(imageConfig);
+                        file = CompressPicker.bitmapToFile(bitmap, imageConfig);
                     } else {
                         file = new File(imageConfig.imagePath);
                     }
-                    compressFileList.add(file);
+                    if (file.exists()) {
+                        compressFileList.add(file);
+                    }
                 }
                 mIsCompressing = false;
                 mMainHandler.post(new Runnable() {
@@ -192,13 +147,16 @@ public class CompressImageTask {
                     }
                 });
             }
-        });
-
+        });*/
+        AsyncImageTask task= AsyncImageTask.create();
+        ImageConfig[] imageConfigs = (ImageConfig[]) list.toArray();
+        task.execute(imageConfigs);
+        task.setOnImagesResult(onImageListResult);
 
     }
 
 
-    public interface OnImagesResult {
+    /*public interface OnImagesResult {
         void startCompress();
 
         void resultFilesSucceed(List<File> fileList);
@@ -220,6 +178,6 @@ public class CompressImageTask {
         void resultBitmapSucceed(Bitmap bitmap);
 
         void resultBitmapError();
-    }
+    }*/
 
 }

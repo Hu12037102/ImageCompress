@@ -3,7 +3,6 @@ package com.baixiaohu.imagecompress.aplication;
 import androidx.multidex.MultiDexApplication;
 
 import com.baixiaohu.imagecompress.toast.Toasts;
-import utils.UiUtils;
 
 /**
  * 项  目 :  ImageCompress

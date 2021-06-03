@@ -2,7 +2,6 @@ package com.baixiaohu.imagecompress.adapter;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
-import androidx.core.util.Pair;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -15,8 +14,6 @@ import com.baixiaohu.imagecompress.R;
 import com.baixiaohu.imagecompress.bean.ImageFileBean;
 import com.baixiaohu.imagecompress.utils.GlideUtils;
 import com.baixiaohu.imagecompress.utils.PairHelp;
-
-import utils.UiUtils;
 
 import java.util.List;
 

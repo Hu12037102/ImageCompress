@@ -31,6 +31,7 @@ import java.util.Map;
 import utils.FileUtils;
 import utils.LogUtils;
 import utils.bean.ImageConfig;
+import utils.task.AsyncImageTask;
 import utils.task.CompressImageTask;
 
 public class MultipleChoiceImageActivity extends BaseActivity {
@@ -154,11 +155,12 @@ public class MultipleChoiceImageActivity extends BaseActivity {
                 }
                 final ViewGroup viewGroup = (ViewGroup) getWindow().getDecorView();
                 final View inflate = LayoutInflater.from(MultipleChoiceImageActivity.this).inflate(R.layout.item_loading_view, viewGroup, false);
-                CompressImageTask.get().compressImages( data, new CompressImageTask.OnImagesResult() {
+                CompressImageTask.get().compressImages(data, new AsyncImageTask.OnImagesResult() {
                     @Override
                     public void startCompress() {
                         viewGroup.addView(inflate);
                     }
+
 
                     @Override
                     public void resultFilesSucceed(List<File> fileList) {
@@ -185,7 +187,7 @@ public class MultipleChoiceImageActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void resultFilesError() {
+                    public void resultError() {
                         if (viewGroup.indexOfChild(inflate) != -1) {
                             viewGroup.removeView(inflate);
                         }

@@ -31,6 +31,7 @@ import java.util.Map;
 import utils.FileUtils;
 import utils.LogUtils;
 import utils.bean.ImageConfig;
+import utils.task.AsyncImageTask;
 import utils.task.CompressImageTask;
 
 
@@ -160,7 +161,7 @@ public class SingChoiceImageActivity extends BaseActivity {
                     final View inflate = LayoutInflater.from(SingChoiceImageActivity.this).inflate(R.layout.item_loading_view, viewGroup, false);
 
                     CompressImageTask.get().compressImage(ImageConfig.getDefaultConfig(mImageFile.getAbsolutePath(),
-                            FileUtils.resultImageFile(FileUtils.outFileDirectory(SingChoiceImageActivity.this)).getAbsolutePath()), new CompressImageTask.OnImageResult() {
+                            FileUtils.resultImageFile(FileUtils.outFileDirectory(SingChoiceImageActivity.this)).getAbsolutePath()), new AsyncImageTask.OnImageResult() {
                         @Override
                         public void startCompress() {
                             viewGroup.addView(inflate);
@@ -181,11 +182,13 @@ public class SingChoiceImageActivity extends BaseActivity {
                         }
 
                         @Override
-                        public void resultFileError() {
+                        public void resultError() {
                             if (viewGroup.indexOfChild(inflate) != -1) {
                                 viewGroup.removeView(inflate);
                             }
                         }
+
+
                     });
                 } else {
                     Toast.makeText(getApplicationContext(), "正在压缩，请勿重复压缩", Toast.LENGTH_SHORT).show();
